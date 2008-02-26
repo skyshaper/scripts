@@ -1,0 +1,209 @@
+#!/bin/bash
+# Snowflake - Draw falling snowflakes on the screen
+# Copyright (C) 2007 Lars Stoltenow <penma@penma.de>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+nomodechg=0
+ 
+function usage()
+{
+        # Show the help text.
+        cat << EOT
+Usage: $0 [ options ] <freq1> <char1> [ <freq2> <char2> [ ... ] ]
+ 
+freq1, freq2, ... freqn are the frequencies of which the given char1, char2, ... charn fall down the screen.
+ 
+        --help      or -h  Show this help message.
+        --nomodechg or -n  Don't change the screen mode.
+EOT
+}
+ 
+# Show the welcome message
+echo "Snowflakes, Copyright (C) 2007 Lars Stoltenow"
+echo "This is free software, and you are welcome to redistribute it under certain conditions; for details, see the GNU General Public License."
+ 
+while [ "$(cut -b 1 <<<$1)" = "-" ]
+do
+        case "$1" in
+        --help | -h ) usage; exit;;
+        --nomodechg | -n ) nomodechg=1;;
+        * ) echo "$0: unknown option '$1'."; echo "'$0 --help' gives more options."; exit 1;;
+        esac
+ 
+        shift
+done
+ 
+# The main program, depending on the fact that all additional parameters are already passed.
+# Make sure there are enough arguments...
+if [ $# -eq 0 ]
+then
+        echo "$0: missing operands"
+        echo "'$0 --help' gives more options."
+        exit 1
+fi
+ 
+f=()
+c=()
+s=0
+t=
+while [ "$1" != "" ]
+do
+        f[${#f[*]}]="$1"
+        c[${#c[*]}]="$2"
+        shift 2
+done
+ 
+while [ $s -lt ${#f[*]} ]
+do
+        t="$t ${f[$s]}"
+        s=$[$s+1]
+done
+ 
+function low_begin()
+{
+        # Initialize our screen, and such stuff.
+        if [ $nomodechg -ne 1 ]
+        then
+                echo -ne '\e[?1049h\e[?25l'
+        fi
+}
+ 
+function low_end()
+{
+        # Reset our screen and do some really needed cleanup.
+        if [ $nomodechg -ne 1 ]
+        then
+                echo -ne '\e[?1049l\e[?25h'
+        fi
+        exit
+}
+ 
+function update_termsize()
+{
+        export w=$(stty size | cut -d' ' -f 2)
+        export h=$(stty size | cut -d' ' -f 1)
+}
+ 
+function throw_flakes()
+{
+        # Throw one line of snowflakes. The frequency can be given as arguments.
+        # The numbers are in x of 100 flakes.
+        local ctr r s t _f
+        _f=()
+        while [ "$1" != "" ]
+        do
+                _f[${#_f[*]}]="$1"
+                shift
+        done
+ 
+        echo -ne '\e[H\e[L'
+ 
+        ctr=1
+        while [ $ctr -lt $w ]
+        do
+                r=$RANDOM
+                s=0
+                t=0
+                while [ $s -lt ${#_f[*]} ]
+                do
+                        t=$[$t+${_f[$s]}]
+                        if [ $r -le $[(32768/100)*$t] ]
+                        then
+                                echo -n "${c[$s]}"
+                                t=0
+                                break
+                        fi
+ 
+                        s=$[$s+1]
+                done
+                if [ $t -ne 0 ]
+                then
+                        echo -n " "
+                fi
+ 
+                ctr=$[$ctr+1]
+        done
+ 
+        sleep 0.01
+}
+ 
+function begin()
+{
+        # Called to slightly fade the snowflakes in.
+        local ctr s t
+ 
+        ctr=0
+        while [ $ctr -lt $h ]
+        do
+                s=0
+                t=
+                while [ $s -lt ${#f[*]} ]
+                do
+                        t="$t $[($ctr*${f[$s]})/$h]"
+                        s=$[$s+1]
+                done
+                throw_flakes $t
+                ctr=$[$ctr+1]
+        done
+}
+ 
+function end()
+{
+        # Called to slightly fade the snowflakes out.
+        local ctr s t
+ 
+        echo -ne '\e[M'
+ 
+        ctr=$h
+        while [ $ctr -gt 0 ]
+        do
+                s=0
+                t=
+                while [ $s -lt ${#f[*]} ]
+                do
+                        t="$t $[($ctr*${f[$s]})/$h]"
+                        s=$[$s+1]
+                done
+                throw_flakes $t
+                ctr=$[$ctr-1]
+        done
+ 
+        ctr=$h
+        while [ $ctr -gt 0 ]
+        do
+                echo -ne '\e[L'
+                sleep 0.1
+                ctr=$[$ctr-1]
+        done
+        low_end
+        exit
+}
+ 
+trap end 2
+trap low_end 9
+trap low_end 15
+ 
+update_termsize
+low_begin
+begin
+while true
+do
+        throw_flakes $t
+        if [ $RANDOM -lt $[(32768/100)*10] ]
+        then
+                update_termsize
+        fi
+done 

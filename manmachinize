@@ -1,0 +1,59 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings;
+
+my $delay = shift;
+my $delay2 = shift;
+my $word = shift;
+
+usage() unless $word;
+usage() unless $delay2;
+usage() unless $delay;
+
+use Curses;
+use Time::HiRes qw(sleep);
+
+print_manmachine($word);
+
+#####
+
+sub usage
+{
+	print "$0 [delay] [delay2] [word]\n";
+	print "\tdelay\tDelay in seconds between words\n";
+	print "\tdelay\tDelay in printing vertically\n";
+	print "\tword\tWord to print\n";
+	print "\n";
+	exit 1;
+}
+
+sub print_manmachine
+{
+	my ($word) = @_;
+	initscr();
+	start_color();
+	init_pair(1, COLOR_RED, COLOR_BLACK);
+
+	my @letters = split //, $word;
+
+	for(my ($i, $j) = (0, scalar @letters-1); $i < scalar @letters; ++$i, --$j)
+	{
+		move($j,$i);
+		printw($word);
+		refresh();
+		sleep($delay);
+	}
+	for(my $i = 0; $i < scalar @letters; ++$i)
+	{
+		move($i, scalar @letters-1);
+		attron(COLOR_PAIR(1));
+		printw($letters[$i]);
+		attroff(COLOR_PAIR(1));
+		refresh();
+		sleep($delay2);
+	}
+	endwin();
+}
+
+# Written by Zaba

@@ -1,0 +1,19 @@
+#!/bin/sh
+# Written by penma or Zaba
+echo '(o_'
+echo '//\'
+ctr=0
+while true
+do
+        echo -ne '\e[2K\e[0G'
+        ctr=$[($ctr+1)%4]
+        case $ctr in
+        0 ) echo -n 'V_/_';;
+        1 ) echo -n 'V_//';;
+        2 ) echo -n 'V_/_';;
+        3 ) echo -n 'V\/';;
+        esac
+        echo -ne '\e[10G'
+        sleep 0.25
+done
+

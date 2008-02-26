@@ -1,0 +1,4 @@
+#!/usr/bin/perl -w
+use strict;
+my@marks=("",".","!");
+print(("h"."m"x(int(rand(4))+1))x(int(rand(12)/10)+1).$marks[rand@marks]."\n")

@@ -1,0 +1,6 @@
+#!/usr/bin/perl
+my @lines;
+while (!eof(STDIN)) {
+    push(@lines, <STDIN>);
+}
+print $lines[(rand scalar @lines)];
