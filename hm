@@ -1,4 +1,13 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 use strict;
-my@marks=("",".","!");
-print((($ARGV[0]eq'-g'?'gr':'h')."m"x(int(rand(4))+1))x(int(rand(12)/10)+1).$marks[rand@marks]."\n")
+my @marks=('', '.', '.'x3, '!');
+my $arg = shift || 'h';
+my $char;
+if ($arg eq '-g') {
+	$char = 'gr';
+} elsif ($arg eq '-r') {
+	$char = 'hr';
+} else {
+	$char = $arg;
+}
+print(($char.'m'x(int(rand(4))+1))x(int(rand(12)/10)+1).$marks[rand@marks]."\n")
