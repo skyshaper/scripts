@@ -1,0 +1,2 @@
+#!/bin/sh
+while true; do echo -n $[$(date -d "$*" +%s)-$(date +%s)]; sleep 1; echo -ne '               \r'; done
