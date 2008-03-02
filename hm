@@ -8,12 +8,12 @@ if ($arg eq '-g') {
 } elsif ($arg eq '-r') {
 	$char = 'hr';
 } elsif ($arg eq '-h' || $arg eq '--help') {
-    print STDERR "Usage:\n";
-    print STDERR "-h This message\n";
-    print STDERR "-g Use grm instead of hm\n";
-    print STDERR "-r Use hrm instead of hm\n";
-    print STDERR "FOO Use FOOm instead of hm\n";
-    exit 1;
+	print STDERR "Usage:\n";
+	print STDERR "-h This message\n";
+	print STDERR "-g Use grm instead of hm\n";
+	print STDERR "-r Use hrm instead of hm\n";
+	print STDERR "FOO Use FOOm instead of hm\n";
+	exit 1;
 } else {
 	$char = $arg;
 }
