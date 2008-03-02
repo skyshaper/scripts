@@ -1,4 +1,5 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
+use strict;
 use MIME::Base64;
 unless (@ARGV == 0) {
     print &_rot13($ARGV[0])."\n";

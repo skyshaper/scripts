@@ -1,18 +1,21 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
+use strict;
 use MIME::Base64;
-unless (@ARGV == 0 or ($ARGV[0] eq '-d' and @ARGV == 1)) {
-    if ($ARGV[0] eq '-d') {
-        print decode_base64($ARGV[1]);
-    } else {
-        print encode_base64($ARGV[0]);
+my $arg0 = $ARGV[0] || '';
+my $arg1 = $ARGV[1] || '';
+unless (@ARGV == 0 or ($arg0 eq '-d' and @ARGV == 1)) {
+	if ($arg0 eq '-d') {
+		print decode_base64($arg1);
+	} else {
+		print encode_base64($arg0);
 }} else {
-    if ($ARGV[0] eq '-d') {
-        while (!eof(STDIN)) {
-            print decode_base64(<STDIN>);
-    }} else {
-        my $input;
-        while (!eof(STDIN)) {
-            $input .= <STDIN>;
-        }
-        print encode_base64($input);
+	if ($arg0 eq '-d') {
+		while (!eof(STDIN)) {
+			print decode_base64(<STDIN>);
+	}} else {
+		my $input;
+		while (!eof(STDIN)) {
+			$input .= <STDIN>;
+		}
+		print encode_base64($input);
 }}
