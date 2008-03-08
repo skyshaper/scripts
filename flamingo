@@ -1,0 +1,19 @@
+#!/usr/bin/env perl
+# Copyright (C) 2008 Maximilian Gaﬂ <mxey@cloudconnected.org>
+# Licensed under GPLv3 or later version
+
+# Resembles the speaking of the flamingo in Max Payne 2:
+# "Mirrors are more fun than television" becomes
+# "mirrorS arE morE fuN thaN televisioN"
+
+use strict;
+use warnings;
+
+while(<>) {
+	chomp();
+	for my $word(split(/\s+/)) {
+		$word =~ /^(\w*)(\w)$/;
+		print lc($1) . uc($2) . " ";
+	}
+	print "\n";
+}
