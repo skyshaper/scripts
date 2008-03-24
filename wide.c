@@ -1,3 +1,10 @@
+/*
+ * Converts lowercase chars into wide Unicode equivalent
+ * 
+ * Written by penma
+ *
+ * Broken on uppercase chars
+ */
 #include <stdio.h>
 
 int main()
@@ -13,6 +20,4 @@ int main()
 		}
 	}
 }
-
-// Written by penma
 
