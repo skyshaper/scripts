@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+sub ackermann($$)
+{
+	my ($x, $y) = @_;
+	print STDERR "ackermann($x, $y);\n";
+	
+	return $y + 1 if (!$x);
+	return ackermann($x - 1, 1) if (!$y);
+	return ackermann($x - 1, ackermann($x, $y - 1));
+}
+
+for (my $x = 0; $x < 5; $x++)
+{
+	for (my $y = 0; $y < 5; $y++)
+	{
+		my $a;
+		print ">>> ACKERMANN($x, $y) <<<\n";
+		$a = ackermann($x, $y);
+		print "$a\n";
+	}
+}
