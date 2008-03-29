@@ -1,9 +1,9 @@
 CFLAGS = -std=c99 -Wall -Wextra -pedantic
 
-all: wide
-
 wide: wide.c
-	$(CC) -o wide wide.c
+	$(CC) -o $@ $(CFLAGS) $<
 
 clean: 
 	$(RM) wide
+
+.PHONY: clean
