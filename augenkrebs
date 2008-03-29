@@ -1,4 +1,7 @@
 #!/usr/bin/env zsh
+# A convenience wrapper around xstrobo
+#
+# Written by penma
 mode="$1"
 shift
 case $mode in
