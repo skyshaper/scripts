@@ -11,7 +11,7 @@ int main()
 {
 	while (!feof(stdin))
 	{
-		char i = fgetc(stdin);
+		unsigned char i = fgetc(stdin);
 		if ((i >= 32) && (i <= 128))
 		{
 			fputc(0xef, stdout);
