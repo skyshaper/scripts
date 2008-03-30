@@ -1,0 +1,103 @@
+#!/usr/bin/env perl
+# manmachine.pl - print word in kraftwerk man machine fashion.
+# By Zaba.
+# Usage: may the usage() be with you.
+# License: Public Domain.
+
+use strict;
+use warnings;
+
+use IO::Handle;
+use Time::HiRes qw/sleep/;
+
+autoflush STDOUT 1;
+
+my $word  = shift || usage();
+my $count = shift || usage();
+my $delay = shift || usage();
+
+my $vdelay = $delay / 10; # Optimal.
+
+my %colors = (
+	normal	=>	"\e[39m",
+	red		=>	"\e[31m",
+	none		=>	"\e[0m",
+);
+
+my %escapes = (
+	clearscreen	=> "\e[2J\e[f",
+	line_down	=> "\e[1E",
+	line_up		=> "\e[1F",
+);
+
+my $word_len = length $word;
+my $times = 0; # Temporary variable used here and there.
+
+## Step 0: clear the screen, etc.
+
+print $escapes{clearscreen};
+print "\n" x $word_len; # We will go up from the bottom.
+
+## Step 1: print the staircase-like thing ##
+
+while ($times < $word_len)
+{
+	# Align it
+	print ' 'x$times;
+	# Print in normal color
+	print $colors{normal}; 
+	# Print word and spaces as much times as we were requested
+	print (($word . (' ' x $word_len)) x $count);
+	# Reset the color
+	print $colors{none}; 
+	# Move to the beginning of the previous line
+	print $escapes{line_up};
+	# Sleep the delay. It can be a floating point number too.
+	sleep $delay; 
+	# Increase the counter.
+	$times ++;
+}
+
+## Step 2: Print the red letters.
+# Here it gets more complicated...
+# This is hacky. We're really going from top to bottom, but it's better to have
+# the counter the other way around.
+$times = 0;
+my @letters = split //, $word; # We need this one!
+
+while ($times < $word_len)
+{
+	# Temporary variable.
+	my $temp_line = "";
+	# Move one line down.
+	print $escapes{line_down}; 
+	# Add whitespace. We'll chop the unneeded beginning away later.
+	$temp_line .= (' 'x$word_len);
+	# Loop around the letters to put the red color bit where needed
+	for (my $i = 0; $i < $word_len; ++$i)
+	{
+		$temp_line .= $colors{red} if ($i == $times); # Put red if needed
+		$temp_line .= $letters[$i];
+		$temp_line .= $colors{normal} if ($i == $times);
+	}
+	$temp_line x= $count; # Duplicate the line
+	# Remove the unneeded whitespace in the beginning. We've some tail there, so
+	# we always match one space.
+	$temp_line =~ s/^  {$times}//; 
+	# Print it over the old line
+	print $temp_line; 
+	sleep $vdelay; # Sleep..
+	$times ++; # Increase the counter.
+}
+
+## We're done!
+
+print "\n";
+
+sub usage
+{
+	print "$0 word count delay\n\tword\tWord to manmachinize\n\tcount\tTimes";
+	print " to print the word\n\tdelay\tHow much seconds to delay between ";
+	print "printing the words\n";
+	exit 0;
+}
