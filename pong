@@ -1,6 +1,12 @@
-#!/bin/bash
-c[0]=.;c[1]=,;c[2]=\;;c[3]=:;export i=0;export j=.;while
-true;do echo -ne "|$j\n";export l=`echo "|${j}">l;rev l`;
-read k;if [[ $k != $l ]]; then echo "LOSER";break;fi;
-export j=${j}${c[(( $RANDOM % 4 + 1 ))]};done
-# Written by Zaba
+#!/usr/bin/env perl
+# Written by Zaba in less than 10 minutes
+# Yes, this is a quick and ugly hack, and
+# it was written to replace the old pong2
+# in shell that was even uglier.
+
+use strict;
+use warnings;
+my$c="|.";print"$c\n";while(<>){
+chomp;die'You lose'unless(reverse
+eq$c);$c.=('.',',',':',';')[rand
+(4)];print"$c\n"}
