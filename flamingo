@@ -10,10 +10,7 @@ use strict;
 use warnings;
 
 while(<>) {
-	chomp();
-	for my $word(split(/\s+/)) {
-		$word =~ /^(\w*)(\w)$/;
-		print lc($1) . uc($2) . " ";
-	}
-	print "\n";
+	chomp;
+	s/(\w*)(\w)/\L$1\E\u$2/g;
+	print;
 }
