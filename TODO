@@ -1,1 +1,2 @@
 flamingo: Handle non-\w chars
+wide: Make work with uppercase chars
