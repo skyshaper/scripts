@@ -10,7 +10,6 @@ use strict;
 use warnings;
 
 while(<>) {
-	chomp;
 	s/(\w*)(\w)/\L$1\E\u$2/g;
 	print;
 }
