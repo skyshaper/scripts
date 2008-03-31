@@ -1,12 +1,9 @@
 #!/usr/bin/perl
 # xstrobo - Adaption of the famous Augenkrebs Flash movies on the Internet
 # using xgamma
-# Made 2007 Lars Stoltenow <penma@penma.de>
-#
-# This program is released into Public Domain, or, if this is not possible in
-# your country, unlimited permission to use, change, or redistribute is granted
-# to the extent permitted by applicable law.
-# 
+
+# Written by Lars Stoltenow <penma@penma.unbrained.org>
+# Licensed under WTFPL
 # No warranty for eye damage!
 use strict;
 use Time::HiRes;

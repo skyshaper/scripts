@@ -1,7 +1,8 @@
 #!/usr/bin/env zsh
 # A convenience wrapper around xstrobo
-#
-# Written by penma
+# Written by Lars Stoltenow <penma@penma.unbrained.org>
+# Licensed under WTFPL
+
 mode="$1"
 if [[ "$mode" == "" ]]; then
     echo 'Usage: augenkrebs [1-4]'

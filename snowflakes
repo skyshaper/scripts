@@ -1,20 +1,7 @@
 #!/bin/bash
 # Snowflake - Draw falling snowflakes on the screen
-# Copyright (C) 2007 Lars Stoltenow <penma@penma.de>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Written by Lars Stoltenow <penma@penma.unbrained.org>
+# Licensed under WTFPL
  
 nomodechg=0
  
@@ -30,10 +17,6 @@ freq1, freq2, ... freqn are the frequencies of which the given char1, char2, ...
         --nomodechg or -n  Don't change the screen mode.
 EOT
 }
- 
-# Show the welcome message
-echo "Snowflakes, Copyright (C) 2007 Lars Stoltenow"
-echo "This is free software, and you are welcome to redistribute it under certain conditions; for details, see the GNU General Public License."
  
 while [ "$(cut -b 1 <<<$1)" = "-" ]
 do

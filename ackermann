@@ -1,4 +1,7 @@
 #!/usr/bin/perl
+# Written by Lars Stoltenow <penma@penma.unbrained.org>
+# Licensed under WTFPL
+
 use strict;
 use warnings;
 
