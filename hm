@@ -1,0 +1,23 @@
+#!/usr/bin/env perl
+# License: WTFPL
+# Written by derf
+use strict;
+use warnings;
+my @marks=('.'x(int(rand(4))), '!');
+my $arg = shift || 'h';
+my $char;
+if ($arg eq '-g') {
+	$char = 'gr';
+} elsif ($arg eq '-r') {
+	$char = 'hr';
+} elsif ($arg eq '-h' || $arg eq '--help') {
+	print STDERR "Usage:\n";
+	print STDERR "-h This message\n";
+	print STDERR "-g Use grm instead of hm\n";
+	print STDERR "-r Use hrm instead of hm\n";
+	print STDERR "FOO Use FOOm instead of hm\n";
+	exit 1;
+} else {
+	$char = $arg;
+}
+print(($char.'m'x(int(rand(4))+1))x(int(rand(12)/10)+1).$marks[rand@marks]."\n")
