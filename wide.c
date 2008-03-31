@@ -3,7 +3,7 @@
  * 
  * Written by penma
  *
- * Broken on uppercase chars
+ * [Ignores everything but lowercase chars, because the rest does not work]
  */
 #include <stdio.h>
 
@@ -12,7 +12,7 @@ int main()
 	while (!feof(stdin))
 	{
 		unsigned char i = fgetc(stdin);
-		if ((i >= 32) && (i <= 128))
+		if ((i >= 97) && (i <= 122))
 		{
 			fputc(0xef, stdout);
 			fputc(0xbc | (i >> 6), stdout);
