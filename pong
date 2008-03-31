@@ -3,7 +3,7 @@
 # Yes, this is a quick and ugly hack, and
 # it was written to replace the old pong2
 # in shell that was even uglier.
-# License: PFDSA
+# License: Public Domain.
 use strict;
 use warnings;
 my$c="|.";print"$c\n";while(<>){
