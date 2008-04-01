@@ -3,7 +3,6 @@
 # Tool for testing your beloved RNG.
 use strict;
 use warnings;
-srand(time());
 my $limit = shift || 1;
 my $rounds = shift || 1;
 my $hits = 0;
