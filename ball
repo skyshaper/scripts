@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-# A convenience wrapper around xstrobo
 # Written by Lars Stoltenow <penma@penma.unbrained.org>
 
 use strict;
