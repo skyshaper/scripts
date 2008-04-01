@@ -1,0 +1,29 @@
+#!/usr/bin/env perl
+# License: Public Domain.
+# Tool for testing your beloved RNG.
+use strict;
+use warnings;
+srand(time());
+my $limit = shift || 1;
+my $rounds = shift || 1;
+my ($randval, $hits, $total, $i);
+$| = 1;
+for ($i = 0; $i < $rounds; ++$i)
+{
+	print "|";
+	foreach (1..100)
+	{
+		$randval = rand();
+		if ($randval <= $limit)
+		{
+			print "+";
+			$hits++;
+		} else {
+			print "-";
+		}
+		$total++;
+	}
+	print "|\n";
+}
+
+print "$total rand() calls in $rounds rounds\n$hits (". $hits*100/$total ."%) rand() calls returnd a value less or equal to $limit\n";
