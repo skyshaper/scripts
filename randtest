@@ -6,7 +6,8 @@ use warnings;
 srand(time());
 my $limit = shift || 1;
 my $rounds = shift || 1;
-my ($randval, $hits, $total, $i);
+my $hits = 0;
+my ($randval, $total, $i);
 $| = 1;
 for ($i = 0; $i < $rounds; ++$i)
 {
