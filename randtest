@@ -1,29 +1,50 @@
 #!/usr/bin/env perl
 # License: Public Domain.
+# Written by me, the one who feeds you with public
+# domain-licensed scripts of questionable usuablity.
+#
 # Tool for testing your beloved RNG.
+# Usage:
+#  randtest [-l <limit>] [-r <rounds>] [-R <rand() per round>]
+#
+
 use strict;
 use warnings;
-my $limit = shift || 1;
-my $rounds = shift || 1;
+use vars qw|$VERSION|;
+$VERSION='1.1';
+use Getopt::Std;
+$Getopt::Std::STANDARD_HELP_VERSION = 1;
+
+my %options;
+getopts('qR:r:l:', \%options);
+
+my $limit = $options{l} || rand;
+my $rounds = $options{r} || 1;
+my $one_round = $options{R} || 100;
+my $quiet = $options{q};
 my $hits = 0;
 my ($randval, $total, $i);
-$| = 1;
+$| = 1; # Autoflush.
+
+print "-" x ($one_round + 2) . "\n" unless ($quiet);
 for ($i = 0; $i < $rounds; ++$i)
 {
-	print "|";
-	foreach (1..100)
+	print "|" unless ($quiet);
+	foreach (1..$one_round)
 	{
 		$randval = rand();
 		if ($randval <= $limit)
 		{
-			print "+";
+			print "." unless ($quiet);
 			$hits++;
 		} else {
-			print "-";
+			print " " unless ($quiet);
 		}
 		$total++;
 	}
-	print "|\n";
+	print "|\n" unless ($quiet);
 }
+print "-" x ($one_round + 2) . "\n\n" unless($quiet);
 
-print "$total rand() calls in $rounds rounds\n$hits (". $hits*100/$total ."%) rand() calls returnd a value less or equal to $limit\n";
+print "$total rand() calls ($one_round*$rounds)\n";
+print $hits*100/$total . "% less or equal to $limit\n";
