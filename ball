@@ -5,4 +5,3 @@ use strict;
 my($s,$e,$x,$y,$f)=(16/8,20,0,7,ord$");
 for$y(-$e/$s..$e/$s){for$x(-$e..$e){push@_=>chr($f^ord("\cN")*(sqrt$x**2+($y*$s)**2<=$e))}push@_=>$/}
 print @_
-# Written by penma
