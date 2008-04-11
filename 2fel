@@ -1,0 +1,22 @@
+#!/usr/bin/env perl
+# 2fel - Talk like berni ;D
+# Written by derf
+# Licensed under WTFPL
+use strict;
+use warnings;
+
+while(<>) {
+	s/eins/1/g;
+	s/zwei/2/g;
+	s/drei/3/g;
+	s/vier/4/g;
+	s/f(ue|ü)nf/5/g;
+	s/sechs/6/g;
+	s/sieben/7/g;
+	s/acht/8/g;
+	s/neun/9/g;
+	s/null/0/g;
+	s/zehn/10/g;
+	s/elf/11/g;
+	print;
+}
