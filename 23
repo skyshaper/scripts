@@ -1,0 +1,17 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+my $input = shift or exit(23);
+my $illu = 0;
+
+$illu++ if (length($input) == 23);
+$illu+= int(length($input) / 23);
+$illu+= $input=~s/23/23/g;
+
+$illu = 23 if ($input eq '23');
+
+$illu = 22 if ($illu > 23);
+
+print $illu;
+print "\n";
