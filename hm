@@ -1,6 +1,8 @@
 #!/usr/bin/env perl
-# License: WTFPL
+# hm - say 'hm' or similar
+# Usage: see 'perldoc hm'
 # Written by derf
+# License: WTFPL
 use strict;
 use warnings;
 my @marks=('.'x(int(rand(4))), '!');
@@ -10,14 +12,42 @@ if ($arg eq '-g') {
 	$char = 'gr';
 } elsif ($arg eq '-r') {
 	$char = 'hr';
-} elsif ($arg eq '-h' || $arg eq '--help') {
-	print STDERR "Usage:\n";
-	print STDERR "-h This message\n";
-	print STDERR "-g Use grm instead of hm\n";
-	print STDERR "-r Use hrm instead of hm\n";
-	print STDERR "FOO Use FOOm instead of hm\n";
-	exit 1;
 } else {
 	$char = $arg;
 }
 print(($char.'m'x(int(rand(4))+1))x(int(rand(12)/10)+1).$marks[rand@marks]."\n")
+
+__END__
+
+=head1 NAME
+
+hm - say hm
+
+=head1 SYNOPSIS
+
+B<hm> [ B<-g>|B<-r>|B<string> ]
+
+=head1 DESCRIPTION
+
+B<hm> says 'hm' in different ways, such as 'hmm...', 'hm!' or 'hmmhmm'
+
+It does this by taking a string (by default 'h'), adding some 'm's, 
+maybe a repetition of all that, and then other fancy stuff
+
+=head1 SYNOPSIS
+
+=over
+
+=item B<-g>
+
+Use 'gr' as string, producing output like 'grm'
+
+=item B<-r>
+
+Use 'hr' as string, producing output like 'hrm'
+
+=item B<string>
+
+Use B<string> as string
+
+=back
