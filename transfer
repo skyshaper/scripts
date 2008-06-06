@@ -1,0 +1,59 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use Time::HiRes qw(time sleep);
+
+$< and die("No root, no LED setting");
+
+my ($dl_frequency, $ul_frequency);
+my $max_frequency = 30;
+my ($dl_max, $ul_max) = (357000, 50000);
+
+my $bt_info;
+my ($dl, $ul);
+my $temp_time;
+my ($dl_state, $ul_state) = (0, 0);
+my ($dl_led, $ul_led) = ("off", "off");
+my ($dl_update, $ul_update) = (time, time);
+
+while (1)
+{
+	$bt_info = qx(transmission-remote -l);
+	chomp($bt_info);
+	
+	$dl = $ul = 0;
+	$bt_info =~ /downloading at (?<dl>[^ ]+) (?<dlunit>[^ ]+)\/s \(UL at (?<ul>[^ ]+) (?<ulunit>[^ ]+)\/s/;
+	
+	$dl = $+{dl};
+	$ul = $+{ul};
+	
+	$dl *= 1024 if $+{dlunit} eq "KiB";
+	$ul *= 1024 if $+{ulunit} eq "KiB";
+	
+	$dl_frequency = $max_frequency * ($dl / $dl_max) + 1;
+	$ul_frequency = $max_frequency * ($ul / $ul_max) + 1;
+	
+	if ($ul_update + (1 / $ul_frequency) < time())
+	{
+		$ul_state++;
+		$ul_state %= 2;
+		$ul_led = ($ul_state ? "on" : "off");
+		$ul_update = time();
+	}
+	
+	if ($dl_update + (1 / $dl_frequency) < time())
+	{	
+		$dl_state++;
+		$dl_state %= 2;
+		$dl_led = ($dl_state ? "on" : "off");
+		$dl_update = time();
+	}
+	
+	$dl_led = "off" if ($dl == 0);
+	$ul_led = "off" if ($ul == 0);
+	
+	open(FOO, ">", "/proc/acpi/ibm/led"); print FOO "1 $ul_led"; close(FOO);
+	open(FOO, ">", "/proc/acpi/ibm/led"); print FOO "2 $dl_led"; close(FOO);
+	sleep(1 / $max_frequency);
+}
