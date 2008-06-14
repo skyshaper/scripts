@@ -1,13 +1,13 @@
 #!/usr/bin/env perl
-# hm - say 'hm' or similar
-# Usage: see 'perldoc hm'
-# Written by derf
-# License: WTFPL
 use strict;
 use warnings;
 my @marks=('.'x(int(rand(4))), '!');
 my $arg = shift || 'h';
 my $char;
+if ($arg eq '-u') {
+	push(@marks, '…');
+	$arg = shift || 'h';
+}
 if ($arg eq '-g') {
 	$char = 'gr';
 } elsif ($arg eq '-r') {
@@ -25,7 +25,7 @@ hm - say hm
 
 =head1 SYNOPSIS
 
-B<hm> [ B<-g>|B<-r>|B<string> ]
+B<hm> [ B<-u> ] [ B<-g>|B<-r>|I<string> ]
 
 =head1 DESCRIPTION
 
@@ -34,9 +34,13 @@ B<hm> says 'hm' in different ways, such as 'hmm...', 'hm!' or 'hmmhmm'
 It does this by taking a string (by default 'h'), adding some 'm's, 
 maybe a repetition of all that, and then other fancy stuff
 
-=head1 SYNOPSIS
+=head1 OPTIONS
 
 =over
+
+=item B<-u>
+
+Unicode. Adds the unicode variant of '...' to the possible word ends.
 
 =item B<-g>
 
@@ -46,8 +50,16 @@ Use 'gr' as string, producing output like 'grm'
 
 Use 'hr' as string, producing output like 'hrm'
 
-=item B<string>
+=item I<string>
 
-Use B<string> as string
+Use I<string> as string
 
 =back
+
+=head1 AUTHOR
+
+Daniel Friesel <derf@derf.homelinux.org>
+
+=head1 LICENSE
+
+  0. You just DO WHAT THE FUCK YOU WANT TO.
