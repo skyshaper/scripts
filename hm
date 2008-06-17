@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-my @marks=('.'x(int(rand(4))), '!');
+my @marks=('', '.'x(int(rand(3))+1), '!');
 my $arg = shift || 'h';
 my $char;
 if ($arg eq '-u') {
