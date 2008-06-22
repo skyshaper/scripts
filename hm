@@ -1,19 +1,23 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-my @marks=('', '.'x(int(rand(3))+1), '!');
-my $arg = shift || 'h';
+use Getopt::Std;
+
+my @marks = ('', '.'x(int(rand(3))+1), '!');
+my %options;
 my $char;
-if ($arg eq '-u') {
+
+getopts('ugr', \%options);
+
+if ($options{u}) {
 	push(@marks, '…');
-	$arg = shift || 'h';
 }
-if ($arg eq '-g') {
+if ($options{g}) {
 	$char = 'gr';
-} elsif ($arg eq '-r') {
+} elsif ($options{r}) {
 	$char = 'hr';
 } else {
-	$char = $arg;
+	$char = shift || 'h';
 }
 print(($char.'m'x(int(rand(4))+1))x(int(rand(12)/10)+1).$marks[rand@marks]."\n")
 
