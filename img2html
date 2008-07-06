@@ -1,0 +1,119 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use GD;
+
+my ($x, $y);;
+my ($r, $g, $b);
+my $resolution = shift or die('not enough arguments');
+my $scale = shift or die('not enough arguments');
+my $img = GD::Image->new(shift) or die('not enough arguments');
+my ($width, $height) = $img->getBounds;
+
+#print "Content-type: text/html\n\n";
+print << "MOIN";
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>img2html</title>
+<style type="text/css">
+<!--
+div {
+position: absolute;
+overflow: hidden;
+}
+-->
+</style>
+</head><body>\n
+MOIN
+
+for ($y = 0; $y <= $height; $y+=$resolution) {
+	for ($x = 0; $x <= $width; $x+=$resolution) {
+		($r, $g, $b) = $img->rgb($img->getPixel($x, $y));
+		printf('<div style="background-color: #%02x%02x%02x; width: %dpx; height: %dpx; left: %dpx; top: %dpx">&nbsp;</div>', $r, $g, $b, $resolution*$scale, $resolution*$scale, $x*$scale, $y*$scale);
+	}
+}
+
+print "</body></html>";
+
+__END__
+
+=head1 NAME
+
+img2html - Convert Image into HTML file
+
+=head1 SYNOPSIS
+
+B<img2html> I<resolution> I<scale> I<file>
+
+=head1 DESCRIPTION
+
+img2html converts an ordinary image into a HTML resembling it, which is
+outputted on stdout.
+
+Options:
+
+=over
+
+=item I<resolution>
+
+resolution factor. 1 means the image will remain it's original quality, 2 means
+it will consist of 2x2 pixel blocks, 3 means 3x3 pixel blocks, and so on.
+
+=item I<scale>
+
+scale factor. 1 means nothing will be changed, 0.5 means the image will be
+scaled to half it's size.
+
+NOTE: Unless you know what you're doing, make sure this equation is true:
+I<resolution>/I<scale> >= 1
+
+=item I<file>
+
+Image file. For supported formats, see GD(3pm)
+
+=back
+
+=head1 EXAMPLES
+
+=over
+
+=item img2html 1 1 foo.jpg > full.html
+
+Convert foo.jpg to full.html, with full quality and full resolution
+
+=item img2html 10 0.1 foo.jpg > small.html
+
+Convert foo.jpg to small.html, scaling it to 10% of it's size, with as high
+quality as possible
+
+=item img2html 3 1 foo.jpg > ugly.html
+
+Convert foo.jpg to ugly.html, preserving it's size, but with lower quality
+
+=back
+
+=head1 BUGS
+
+=over
+
+=item * It will make your browser lag. Do NOT try images larger than 300*300
+pixels without scaling.
+
+=back
+
+=head1 TODO
+
+=over
+
+=item * Some error checking
+
+=item * Compression
+
+=back
+
+=head1 AUTHOR
+
+Daniel Friesel <derf@derf.homelinux.org>
+
+=head1 LICENSE
+
+  0. You just DO WHAT THE FUCK YOU WANT TO.
