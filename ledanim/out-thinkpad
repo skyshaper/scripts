@@ -1,9 +1,17 @@
 #!/usr/bin/env perl
-while (<>)
-{
+use strict;
+use warnings;
+
+sub write_to_led {
+	open(LED, '>', '/proc/acpi/ibm/led') or die("Cannot open /proc/acpi/ibm/led: $!");
+	print LED shift;
+	close(LED);
+}
+
+while (<>) {
 	chomp;
 	/(.) (.)/;
 	my $state = ($2 eq "0" ? "off" : "on");
 	my $led = ($1 eq "1" ? "0" : ($1 eq "2" ? $1 : "7"));
-	system("sh -c \"echo " . $led . " " . $state . " > /proc/acpi/ibm/led\"");
+	write_to_led("$led $state");
 }
