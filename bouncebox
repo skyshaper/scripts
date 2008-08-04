@@ -1,0 +1,345 @@
+#!/usr/bin/perl
+# Written by penma
+# License: WTFPL
+use strict;
+use warnings;
+use Time::HiRes qw(time sleep);
+use POSIX;
+use Encode;
+
+my @balls;
+my %o = (
+	"w" => 40, "h" => 20, "x" => 5, "y" => 5,     # box params
+	"dx" => 20, "dy" => 20,                       # box speed
+	"sw" => undef, "sh" => undef,                 # screen params
+	"restx" => 1, "resty" => 1,                   # cursor idle position
+	"time" => time
+);
+my $wanted_fps = 20;
+my $pre_pause_time;
+my %O;
+
+# START of SIMULATION ROUTINES
+my %boxchars = (
+	"unicode"   => "┏━┓┃ ┃┗━┛",
+	"ascii"     => ",-.| |`-'",
+	"invisible" => "         ",
+	"corners"   => ". .   . ."
+);
+my @boxchars;
+my $boxchars;
+
+sub boxchars_use($)
+{
+	@boxchars = ();
+	foreach (split(//, decode("UTF-8", $boxchars{$_[0]})))
+	{
+		push(@boxchars, encode("UTF-8", $_));
+	}
+	$boxchars = $_[0];
+}
+
+boxchars_use("unicode");
+
+sub redraw_box_clear_line($)
+{
+	printf("\e[%d;%dH%*s", $O{y} - 1 + $_[0], $O{x} - 1, $O{w} + 2, "");
+}
+
+sub redraw_box()
+{	
+	redraw_box_clear_line($_) foreach(0..$O{h}+1);
+	printf("\e[%d;%dH%s%s%s", $o{y} - 1 + 0,     $o{x} - 1, $boxchars[0], $boxchars[1] x $o{w}, $boxchars[2]);
+	printf("\e[%d;%dH%s%s%s", $o{y} - 1 + $_,    $o{x} - 1, $boxchars[3], $boxchars[4] x $o{w}, $boxchars[5]) foreach (1..$o{h});
+	printf("\e[%d;%dH%s%s%s", $o{y}     + $o{h}, $o{x} - 1, $boxchars[6], $boxchars[7] x $o{w}, $boxchars[8]);
+}
+
+sub redraw_balls(;$)
+{
+	my ($status) = @_;
+	printf("\e[1;1H\e[2K\e[1mBounceBox - h for help - %s\e[m", defined $status ? $status : "");
+	
+	foreach my $ball (@balls)
+	{
+		printf("\e[%d;%dH \e[%d;%dH\e[%smo\e[m",
+			$ball->{oy} + $o{y}, $ball->{ox} + $o{x},
+			$ball->{y} + $o{y}, $ball->{x} + $o{x},
+			defined($ball->{color}) ? $ball->{color} : ""
+		);
+	}
+	printf("\e[%d;%dH", $o{resty}, $o{restx});
+	
+	# Flush
+	$| = 1; $| = 0;
+}
+
+sub simulate_box($)
+{
+	my ($timestep) = @_;
+	$o{x} += $o{dx} * $timestep;
+	$o{y} += $o{dy} * $timestep;
+	$o{dx} = -$o{dx} if ($o{x} > ($o{sw} - 2 - $o{w}) or $o{x} < 2);
+	$o{dy} = -$o{dy} if ($o{y} > ($o{sh} - 2 - $o{h}) or $o{y} < 4);
+}
+
+sub simulate_balls($)
+{
+	my ($timestep) = @_;
+	
+	foreach my $ball (@balls)
+	{
+		$ball->{ox} = $ball->{x};
+		$ball->{oy} = $ball->{y};
+		
+		$ball->{x} += $ball->{dx} * $timestep;
+		$ball->{y} += $ball->{dy} * $timestep;
+		
+		if ($ball->{x} >= $o{w})
+		{
+			$ball->{x} = 2 * $o{w} - $ball->{x};
+			$ball->{dx} = -$ball->{dx};
+		}
+		
+		if ($ball->{x} < 0)
+		{
+			$ball->{x} = -$ball->{x};
+			$ball->{dx} = -$ball->{dx};
+		}
+		
+		if ($ball->{y} >= $o{h})
+		{
+			$ball->{y} = 2 * $o{h} - $ball->{y};
+			$ball->{dy} = -$ball->{dy};
+		}
+		
+		if ($ball->{y} < 0)
+		{
+			$ball->{y} = -$ball->{y};
+			$ball->{dy} = -$ball->{dy};
+		}
+	}
+}
+
+sub pause_start()
+{
+	$pre_pause_time = time;
+}
+
+sub pause_stop()
+{
+	$O{"time"} += time - $pre_pause_time;
+}
+
+sub add_ball()
+{
+	push(@balls, {
+		"x" => rand($o{w}), "y" => rand($o{h}),
+		"dx" => rand(10) + 10, "dy" => rand(10) + 10,
+		"color" => "1;" . (30 + int(rand(6.5) + 0.5))
+	});
+}
+
+# END of SIMULATION ROUTINES
+
+# BEGIN of DRIVER SETUP
+
+# select() vars
+my ($fh_in, $fh_out, $inchar);
+$fh_in = '';
+vec($fh_in, 0, 1) = 1;
+
+# signal handlers/terminal set(up|down)
+sub term_raw()
+{
+	my $termios = new POSIX::Termios;
+	$termios->getattr(0);
+	$termios->setlflag($termios->getlflag & ~POSIX::ICANON & ~POSIX::ECHO);
+	$termios->setattr(0, POSIX::TCSANOW);
+}
+
+sub term_unraw()
+{
+	my $termios = new POSIX::Termios;
+	$termios->getattr(0);
+	$termios->setlflag($termios->getlflag | POSIX::ICANON | POSIX::ECHO);
+	$termios->setattr(0, POSIX::TCSANOW);
+}
+
+sub term_getline(;$)
+{
+	term_unraw();
+	print $_[0] if (defined $_[0]);
+	my $line = <>;
+	term_raw();
+	return $line;
+}
+
+$SIG{INT} = $SIG{TERM} = sub
+{
+	term_unraw();
+	exit(0);
+};
+
+term_raw();
+
+# END of DRIVER SETUP
+
+sub configurator()
+{
+	my @options = (
+		[ "Number of balls",
+			sub
+			{
+				my $newnum = "";
+				while ($newnum !~ /^[0-9]+$/)
+				{
+					$newnum = term_getline("Enter number of balls: ");
+					chomp $newnum;
+				}
+				pop @balls while scalar @balls > $newnum;
+				add_ball() while scalar @balls < $newnum;
+			},
+			sub { scalar @balls }
+		],
+		[ "Maximum FPS",
+			sub
+			{
+				$wanted_fps = "";
+				while ($wanted_fps !~ /^(?:[0-9]*\.)?[0-9]+$/)
+				{
+					$wanted_fps = term_getline("Enter desired number of FPS (decimal allowed): ");
+					chomp $wanted_fps;
+				}
+			},
+			sub { sprintf("%.2f", $wanted_fps) }
+		],
+		[ "Box characters",
+			sub
+			{
+				my $name = "";
+				until (exists($boxchars{$name}))
+				{
+					$name = term_getline("Enter name of box characters to use (" . join(" ", keys %boxchars) . "): ");
+					chomp $name;
+				}
+				boxchars_use($name);
+			},
+			sub { $boxchars }
+		]
+	);
+	my $selected_option = 0;
+	
+	pause_start();
+	
+	
+	my $inchar;
+	while (1)
+	{
+		# render
+		print "\e[2J\e[1;1H\e[1mBounceBox - Configurator\e[m\n\n";
+		print "Use < and > to switch options, newline to change value, q to exit\n\n";
+		for (my $opt_index = 0; $opt_index < scalar @options; $opt_index++)
+		{
+			printf("%s %-60s %s\n",
+				($opt_index == $selected_option ? "*" : " "),
+				$options[$opt_index]->[0],
+				$options[$opt_index]->[2]->()
+			);
+		}
+		print "\n";
+		
+		sysread(STDIN, $inchar, 1);
+		
+		# switching options
+		$selected_option++ if ($inchar eq ">");
+		$selected_option-- if ($inchar eq "<");
+		# fix under/overflows
+		$selected_option = 0 unless ($selected_option > 0);
+		$selected_option = scalar @options - 1 unless ($selected_option < scalar @options);
+		
+		# changing
+		if ($inchar eq "\n")
+		{
+			$options[$selected_option]->[1]->();
+		}
+		
+		# leave
+		last if ($inchar eq "q");
+	}
+	print "\e[2J";
+	
+	pause_stop();
+}
+
+add_ball() for (1..6);
+
+# get screen size
+my $foo = qx(stty size);
+chomp $foo;
+($o{sh}, $o{sw}) = ($foo =~ /^(.*) (.*)$/);
+
+# clear
+print "\e[2J";
+
+%O = %o;
+while (1)
+{
+	# scan for keyboard commands
+	my ($nfound, undef) = select($fh_out = $fh_in, undef, undef, 0);
+	if ($nfound)
+	{
+		# it WILL be stdin.
+		sysread(STDIN, $inchar, 1);
+		
+		$SIG{INT}->() if ($inchar eq "q"); # quit
+		
+		add_ball() if ($inchar eq "+");
+		pop(@balls) if ($inchar eq "-");
+		
+		$wanted_fps++ if ($inchar eq ">");
+		$wanted_fps-- if ($inchar eq "<");
+		
+		if ($inchar eq "h" or $inchar eq "?")
+		{
+			pause_start();
+			print "\e[2J\e[1;1H\e[1mBounceBox - help screen\e[m\n\n";
+			print << "EOF";
+q or SIGINT/TERM  - exit
+h or ?            - this help screen
++ and -           - add/remove balls
+< and >           - decrease/increase mxeymum FPS
+c                 - change all parameters to your desire
+
+Write any byte to STDIN to continue...
+EOF
+			sysread(STDIN, $inchar, 1);
+			print "\e[2J";
+			pause_stop();
+		}
+		
+		configurator() if ($inchar eq "c");
+	}
+	
+	$o{"time"} = time;	
+	simulate_box($o{"time"} - $O{"time"});
+	simulate_balls($o{"time"} - $O{"time"});
+	redraw_box();
+	redraw_balls(sprintf("%d balls at %3.2f FPS (max. %d)", scalar @balls, 1 / ($o{"time"} - $O{"time"}), $wanted_fps));
+	
+	%O = %o;
+	sleep(1 / $wanted_fps);
+}
+
+__END__
+
+Bugs to fix or not to fix:
+
+* There is a possibility that balls appear in the edges of the delimiting box.
+This is a result from floating point arithmetics everywhere. If the box offset
+is said to be 5.5 and its width is 40, then the border will be rendered at char
+45. If a ball is at 39.6, it's rendered at 39.6 + 5.5 = 45.1 - although the box
+would actually end at 45.5 and therefore no collision has happened, it is rendered
+in the same cell. I prefer exactness over appearance, so I won't fix this.
+* It uses external stty command to get terminal size. There's lotsa other methods.
+* (SHOULD BE FIXED) Allow customization of more parameters which are already set
+at the top of this file.
