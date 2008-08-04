@@ -44,15 +44,15 @@ boxchars_use("unicode");
 
 sub redraw_box_clear_line($)
 {
-	printf("\e[%d;%dH%*s", $O{y} - 1 + $_[0], $O{x} - 1, $O{w} + 2, "");
+	printf("\e[%d;%dH%*s", $O{y} + 2 + $_[0], $O{x}, $O{w} + 2, "");
 }
 
 sub redraw_box()
 {	
-	redraw_box_clear_line($_) foreach(0..$O{h}+1);
-	printf("\e[%d;%dH%s%s%s", $o{y} - 1 + 0,     $o{x} - 1, $boxchars[0], $boxchars[1] x $o{w}, $boxchars[2]);
-	printf("\e[%d;%dH%s%s%s", $o{y} - 1 + $_,    $o{x} - 1, $boxchars[3], $boxchars[4] x $o{w}, $boxchars[5]) foreach (1..$o{h});
-	printf("\e[%d;%dH%s%s%s", $o{y}     + $o{h}, $o{x} - 1, $boxchars[6], $boxchars[7] x $o{w}, $boxchars[8]);
+	redraw_box_clear_line($_) foreach(-1..$O{h});
+	printf("\e[%d;%dH%s%s%s", $o{y} + 2 - 1,     $o{x}, $boxchars[0], $boxchars[1] x $o{w}, $boxchars[2]);
+	printf("\e[%d;%dH%s%s%s", $o{y} + 2 + $_,    $o{x}, $boxchars[3], $boxchars[4] x $o{w}, $boxchars[5]) foreach (0..$o{h}-1);
+	printf("\e[%d;%dH%s%s%s", $o{y} + 2 + $o{h}, $o{x}, $boxchars[6], $boxchars[7] x $o{w}, $boxchars[8]);
 }
 
 sub redraw_balls(;$)
@@ -80,7 +80,7 @@ sub simulate_box($)
 	$o{x} += $o{dx} * $timestep;
 	$o{y} += $o{dy} * $timestep;
 	$o{dx} = -$o{dx} if ($o{x} > ($o{sw} - 2 - $o{w}) or $o{x} < 2);
-	$o{dy} = -$o{dy} if ($o{y} > ($o{sh} - 2 - $o{h}) or $o{y} < 4);
+	$o{dy} = -$o{dy} if ($o{y} > ($o{sh} - 2 - $o{h}) or $o{y} < 2);
 }
 
 sub simulate_balls($)
