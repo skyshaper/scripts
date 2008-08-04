@@ -260,7 +260,6 @@ sub configurator()
 		# leave
 		last if ($inchar eq "q");
 	}
-	print "\e[2J";
 	
 	pause_stop();
 }
@@ -277,8 +276,6 @@ $o{sw} -= 2; # box borders
 %O = %o;
 while (1)
 {
-	print "\e[2J";
-	
 	# scan for keyboard commands
 	unless ($frame_counter % 10)
 	{
@@ -299,7 +296,7 @@ while (1)
 			if ($inchar eq "h" or $inchar eq "?")
 			{
 				pause_start();
-				print "\e[1;1H\e[1mBounceBox - help screen\e[m\n\n";
+				print "\e[2J\e[1;1H\e[1mBounceBox - help screen\e[m\n\n";
 				print << "EOF";
 q or SIGINT/TERM  - exit
 h or ?            - this help screen
@@ -311,7 +308,6 @@ c                 - change all parameters to your desire
 Write any byte to STDIN to continue...
 EOF
 				sysread(STDIN, $inchar, 1);
-				print "\e[2J";
 				pause_stop();
 			}
 			
@@ -320,6 +316,7 @@ EOF
 		}
 	}
 	
+	print "\e[2J";
 	$o{"time"} = time;	
 	simulate_box($o{"time"} - $O{"time"});
 	simulate_balls($o{"time"} - $O{"time"});
