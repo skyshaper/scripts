@@ -17,6 +17,7 @@ my %o = (
 );
 my $wanted_fps = 20;
 my $pre_pause_time;
+my $frame_counter = 0;
 my %O;
 
 # START of SIMULATION ROUTINES
@@ -285,25 +286,27 @@ print "\e[2J";
 while (1)
 {
 	# scan for keyboard commands
-	my ($nfound, undef) = select($fh_out = $fh_in, undef, undef, 0);
-	if ($nfound)
+	unless ($frame_counter % 10)
 	{
-		# it WILL be stdin.
-		sysread(STDIN, $inchar, 1);
-		
-		$SIG{INT}->() if ($inchar eq "q"); # quit
-		
-		add_ball() if ($inchar eq "+");
-		pop(@balls) if ($inchar eq "-");
-		
-		$wanted_fps++ if ($inchar eq ">");
-		$wanted_fps-- if ($inchar eq "<");
-		
-		if ($inchar eq "h" or $inchar eq "?")
+		my ($nfound, undef) = select($fh_out = $fh_in, undef, undef, 0);
+		if ($nfound)
 		{
-			pause_start();
-			print "\e[2J\e[1;1H\e[1mBounceBox - help screen\e[m\n\n";
-			print << "EOF";
+			# it WILL be stdin.
+			sysread(STDIN, $inchar, 1);
+			
+			$SIG{INT}->() if ($inchar eq "q"); # quit
+			
+			add_ball() if ($inchar eq "+");
+			pop(@balls) if ($inchar eq "-");
+			
+			$wanted_fps++ if ($inchar eq ">");
+			$wanted_fps-- if ($inchar eq "<");
+			
+			if ($inchar eq "h" or $inchar eq "?")
+			{
+				pause_start();
+				print "\e[2J\e[1;1H\e[1mBounceBox - help screen\e[m\n\n";
+				print << "EOF";
 q or SIGINT/TERM  - exit
 h or ?            - this help screen
 + and -           - add/remove balls
@@ -312,22 +315,24 @@ c                 - change all parameters to your desire
 
 Write any byte to STDIN to continue...
 EOF
-			sysread(STDIN, $inchar, 1);
-			print "\e[2J";
-			pause_stop();
+				sysread(STDIN, $inchar, 1);
+				print "\e[2J";
+				pause_stop();
+			}
+			
+			configurator() if ($inchar eq "c");
 		}
-		
-		configurator() if ($inchar eq "c");
 	}
 	
 	$o{"time"} = time;	
 	simulate_box($o{"time"} - $O{"time"});
 	simulate_balls($o{"time"} - $O{"time"});
 	redraw_box();
-	redraw_balls(sprintf("%d balls at %3.2f FPS (max. %d)", scalar @balls, 1 / ($o{"time"} - $O{"time"}), $wanted_fps));
+	redraw_balls(sprintf("%d balls at %6.2f FPS (max. %d)", scalar @balls, 1 / ($o{"time"} - $O{"time"}), $wanted_fps));
 	
 	%O = %o;
 	sleep(1 / $wanted_fps);
+	$frame_counter++;
 }
 
 __END__
