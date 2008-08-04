@@ -9,7 +9,7 @@ use Encode;
 
 my @balls;
 my %o = (
-	"w" => 40, "h" => 20, "x" => 5, "y" => 5,     # box params
+	"w" => 16, "h" => 8, "x" => 5, "y" => 5,      # box params
 	"dx" => 20, "dy" => 20,                       # box speed
 	"sw" => undef, "sh" => undef,                 # screen params
 	"restx" => 1, "resty" => 1,                   # cursor idle position
@@ -42,29 +42,22 @@ sub boxchars_use($)
 
 boxchars_use("unicode");
 
-sub redraw_box_clear_line($)
-{
-	printf("\e[%d;%dH%*s", $O{y} + 2 + $_[0], $O{x}, $O{w} + 2, "");
-}
-
 sub redraw_box()
 {	
-	redraw_box_clear_line($_) foreach(-1..$O{h});
-	printf("\e[%d;%dH%s%s%s", $o{y} + 2 - 1,     $o{x}, $boxchars[0], $boxchars[1] x $o{w}, $boxchars[2]);
-	printf("\e[%d;%dH%s%s%s", $o{y} + 2 + $_,    $o{x}, $boxchars[3], $boxchars[4] x $o{w}, $boxchars[5]) foreach (0..$o{h}-1);
-	printf("\e[%d;%dH%s%s%s", $o{y} + 2 + $o{h}, $o{x}, $boxchars[6], $boxchars[7] x $o{w}, $boxchars[8]);
+	printf("\e[%d;%dH%s%s%s", $o{y} + 3 - 1,     $o{x} + 1, $boxchars[0], $boxchars[1] x $o{w}, $boxchars[2]);
+	printf("\e[%d;%dH%s%s%s", $o{y} + 3 + $_,    $o{x} + 1, $boxchars[3], $boxchars[4] x $o{w}, $boxchars[5]) foreach (0..$o{h}-1);
+	printf("\e[%d;%dH%s%s%s", $o{y} + 3 + $o{h}, $o{x} + 1, $boxchars[6], $boxchars[7] x $o{w}, $boxchars[8]);
 }
 
 sub redraw_balls(;$)
 {
 	my ($status) = @_;
-	printf("\e[1;1H\e[2K\e[1mBounceBox - h for help - %s\e[m", defined $status ? $status : "");
+	printf("\e[1;1H\e[1mBounceBox - h for help - %s\e[m", defined $status ? $status : "");
 	
 	foreach my $ball (@balls)
 	{
-		printf("\e[%d;%dH \e[%d;%dH\e[%smo\e[m",
-			$ball->{oy} + $o{y}, $ball->{ox} + $o{x},
-			$ball->{y} + $o{y}, $ball->{x} + $o{x},
+		printf("\e[%d;%dH\e[%smo\e[m",
+			$ball->{y} + $o{y} + 3, $ball->{x} + $o{x} + 2,
 			defined($ball->{color}) ? $ball->{color} : ""
 		);
 	}
@@ -79,8 +72,8 @@ sub simulate_box($)
 	my ($timestep) = @_;
 	$o{x} += $o{dx} * $timestep;
 	$o{y} += $o{dy} * $timestep;
-	$o{dx} = -$o{dx} if ($o{x} > ($o{sw} - 2 - $o{w}) or $o{x} < 2);
-	$o{dy} = -$o{dy} if ($o{y} > ($o{sh} - 2 - $o{h}) or $o{y} < 2);
+	$o{dx} = -$o{dx} if ($o{x} > ($o{sw} - $o{w}) or $o{x} < 0);
+	$o{dy} = -$o{dy} if ($o{y} > ($o{sh} - $o{h}) or $o{y} < 0);
 }
 
 sub simulate_balls($)
@@ -278,13 +271,14 @@ add_ball() for (1..6);
 my $foo = qx(stty size);
 chomp $foo;
 ($o{sh}, $o{sw}) = ($foo =~ /^(.*) (.*)$/);
-
-# clear
-print "\e[2J";
+$o{sh} -= 3; # status line and box borders
+$o{sw} -= 2; # box borders
 
 %O = %o;
 while (1)
 {
+	print "\e[2J";
+	
 	# scan for keyboard commands
 	unless ($frame_counter % 10)
 	{
@@ -305,7 +299,7 @@ while (1)
 			if ($inchar eq "h" or $inchar eq "?")
 			{
 				pause_start();
-				print "\e[2J\e[1;1H\e[1mBounceBox - help screen\e[m\n\n";
+				print "\e[1;1H\e[1mBounceBox - help screen\e[m\n\n";
 				print << "EOF";
 q or SIGINT/TERM  - exit
 h or ?            - this help screen
