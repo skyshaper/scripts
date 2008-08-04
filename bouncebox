@@ -91,25 +91,25 @@ sub simulate_balls($)
 		if ($ball->{x} >= $o{w})
 		{
 			$ball->{x} = 2 * $o{w} - $ball->{x};
-			$ball->{dx} = -$ball->{dx};
+			$ball->{dx} = -abs($ball->{dx});
 		}
 		
 		if ($ball->{x} < 0)
 		{
-			$ball->{x} = -$ball->{x};
-			$ball->{dx} = -$ball->{dx};
+			$ball->{x} = abs($ball->{x});
+			$ball->{dx} = abs($ball->{dx});
 		}
 		
 		if ($ball->{y} >= $o{h})
 		{
 			$ball->{y} = 2 * $o{h} - $ball->{y};
-			$ball->{dy} = -$ball->{dy};
+			$ball->{dy} = -abs($ball->{dy});
 		}
 		
 		if ($ball->{y} < 0)
 		{
-			$ball->{y} = -$ball->{y};
-			$ball->{dy} = -$ball->{dy};
+			$ball->{y} = abs($ball->{y});
+			$ball->{dy} = abs($ball->{dy});
 		}
 	}
 }
@@ -303,6 +303,7 @@ while (1)
 				print << "EOF";
 q or SIGINT/TERM  - exit
 h or ?            - this help screen
+r                 - reset box position
 + and -           - add/remove balls
 < and >           - decrease/increase mxeymum FPS
 c                 - change all parameters to your desire
@@ -315,6 +316,7 @@ EOF
 			}
 			
 			configurator() if ($inchar eq "c");
+			$o{x} = $o{y} = 2 if ($inchar eq "r");
 		}
 	}
 	
