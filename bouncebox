@@ -258,13 +258,23 @@ sub menu()
 					"color" => "1;" . $color
 				});
 			},
-			sub { "" }
+		],
+		[ "Exit configurator",
+			sub
+			{
+				goto exit_configurator;
+			},
+		],
+		[ "Exit program",
+			sub
+			{
+				$SIG{INT}->();
+			},
 		]
 	);
 	my $selected_option = 1;
 	
 	pause_start();
-	
 	
 	my $inchar;
 	while (1)
@@ -279,7 +289,7 @@ sub menu()
 				printf("%s %-60s %s\n",
 					($opt_index == $selected_option ? "*" : " "),
 					$options[$opt_index]->[0],
-					$options[$opt_index]->[2]->()
+					defined($options[$opt_index]->[2]) ? $options[$opt_index]->[2]->() : ""
 				);
 			}
 			else
@@ -309,9 +319,10 @@ sub menu()
 		}
 		
 		# leave
-		last if ($inchar eq "q");
+		goto exit_configurator if ($inchar eq "q");
 	}
 	
+exit_configurator:
 	pause_stop();
 }
 
