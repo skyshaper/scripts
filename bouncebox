@@ -186,7 +186,7 @@ sub menu()
 			sub
 			{
 				my $newnum = "";
-				while ($newnum !~ /^[0-9]+$/)
+				until ($newnum =~ /^[0-9]+$/)
 				{
 					$newnum = term_getline("Enter number of balls: ");
 					chomp $newnum;
@@ -200,7 +200,7 @@ sub menu()
 			sub
 			{
 				$wanted_fps = "";
-				while ($wanted_fps !~ /^(?:[0-9]*\.)?[0-9]+$/)
+				until ($wanted_fps =~ /^(?:[0-9]*\.)?[0-9]+$/)
 				{
 					$wanted_fps = term_getline("Enter desired number of FPS (decimal allowed): ");
 					chomp $wanted_fps;
