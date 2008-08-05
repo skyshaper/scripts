@@ -129,7 +129,7 @@ sub add_ball()
 	push(@balls, {
 		"x" => rand($o{w}), "y" => rand($o{h}),
 		"dx" => rand(10) + 10, "dy" => rand(10) + 10,
-		"color" => "1;" . (30 + int(rand(6.5) + 0.5))
+		"color" => "1;" . (30 + int(rand(7.5) + 0.5))
 	});
 }
 
@@ -178,9 +178,10 @@ term_raw();
 
 # END of DRIVER SETUP
 
-sub configurator()
+sub menu()
 {
 	my @options = (
+		[ "Options" ],
 		[ "Number of balls",
 			sub
 			{
@@ -219,9 +220,48 @@ sub configurator()
 				boxchars_use($name);
 			},
 			sub { $boxchars }
+		],
+		
+		[ "Actions" ],
+		[ "Add new ball",
+			sub
+			{
+				my $ballcolor = "";
+				my $color;
+				my ($balldx, $balldy) = ("", "");
+				until ($ballcolor =~ /^(?:black|red|green|yellow|blue|magenta|cyan|white)$/)
+				{
+					$ballcolor = term_getline("Enter ball color (black red green yellow blue magenta cyan white): ");
+					chomp $ballcolor;
+				}
+				until ($balldx =~ /^(?:[0-9]*\.)?[0-9]+$/)
+				{
+					$balldx = term_getline("Enter ball X speed (chars/second, decimal allowed): ");
+					chomp $balldx;
+				}
+				until ($balldy =~ /^(?:[0-9]*\.)?[0-9]+$/)
+				{
+					$balldy = term_getline("Enter ball Y speed (chars/second, decimal allowed): ");
+					chomp $balldy;
+				}
+				$color = "30" if ($ballcolor eq "black");
+				$color = "31" if ($ballcolor eq "red");
+				$color = "32" if ($ballcolor eq "green");
+				$color = "33" if ($ballcolor eq "yellow");
+				$color = "34" if ($ballcolor eq "blue");
+				$color = "35" if ($ballcolor eq "magenta");
+				$color = "36" if ($ballcolor eq "cyan");
+				$color = "37" if ($ballcolor eq "white");
+				push(@balls, {
+					"x" => rand($o{w}), "y" => rand($o{h}),
+					"dx" => $balldx, "dy" => $balldy,
+					"color" => "1;" . $color
+				});
+			},
+			sub { "" }
 		]
 	);
-	my $selected_option = 0;
+	my $selected_option = 1;
 	
 	pause_start();
 	
@@ -230,15 +270,24 @@ sub configurator()
 	while (1)
 	{
 		# render
-		print "\e[2J\e[1;1H\e[1mBounceBox - Configurator\e[m\n\n";
-		print "Use < and > to switch options, newline to change value, q to exit\n\n";
+		print "\e[2J\e[1;1H\e[1mBounceBox - Menu\e[m\n\n";
+		print "Use < and > to switch options, newline to activate, q to exit\n\n";
 		for (my $opt_index = 0; $opt_index < scalar @options; $opt_index++)
 		{
-			printf("%s %-60s %s\n",
-				($opt_index == $selected_option ? "*" : " "),
-				$options[$opt_index]->[0],
-				$options[$opt_index]->[2]->()
-			);
+			if (scalar @{$options[$opt_index]} > 1)
+			{
+				printf("%s %-60s %s\n",
+					($opt_index == $selected_option ? "*" : " "),
+					$options[$opt_index]->[0],
+					$options[$opt_index]->[2]->()
+				);
+			}
+			else
+			{
+				printf("  \e[1m%s\e[m\n",
+					$options[$opt_index]->[0],
+				);
+			}
 		}
 		print "\n";
 		
@@ -248,8 +297,10 @@ sub configurator()
 		$selected_option++ if ($inchar eq ">");
 		$selected_option-- if ($inchar eq "<");
 		# fix under/overflows
-		$selected_option = 0 unless ($selected_option > 0);
+		$selected_option = 1 unless ($selected_option > 1);
 		$selected_option = scalar @options - 1 unless ($selected_option < scalar @options);
+		$selected_option++ if (scalar @{$options[$selected_option]} == 1 and $inchar eq ">");
+		$selected_option-- if (scalar @{$options[$selected_option]} == 1 and $inchar eq "<");
 		
 		# changing
 		if ($inchar eq "\n")
@@ -311,7 +362,7 @@ EOF
 				pause_stop();
 			}
 			
-			configurator() if ($inchar eq "c");
+			menu() if ($inchar eq "c");
 			$o{x} = $o{y} = 2 if ($inchar eq "r");
 		}
 	}
