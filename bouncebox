@@ -354,7 +354,7 @@ h or ?            - this help screen
 r                 - reset box position
 + and -           - add/remove balls
 < and >           - decrease/increase mxeymum FPS
-c                 - change all parameters to your desire
+m                 - open the menu to change all parameters to your desire
 
 Write any byte to STDIN to continue...
 EOF
@@ -362,7 +362,7 @@ EOF
 				pause_stop();
 			}
 			
-			menu() if ($inchar eq "c");
+			menu() if ($inchar eq "m");
 			$o{x} = $o{y} = 2 if ($inchar eq "r");
 		}
 	}
