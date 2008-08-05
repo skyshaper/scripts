@@ -270,7 +270,7 @@ sub menu()
 		[ "Exit configurator",
 			sub
 			{
-				goto exit_configurator;
+				last keyloop;
 			},
 		],
 		[ "Exit program",
@@ -285,7 +285,7 @@ sub menu()
 	pause_start();
 	
 	my $inchar;
-	while (1)
+	keyloop: while (1)
 	{
 		# render
 		print "\e[2J\e[1;1H\e[1mBounceBox - Menu\e[m\n\n";
@@ -327,10 +327,9 @@ sub menu()
 		}
 		
 		# leave
-		goto exit_configurator if ($inchar eq "q");
+		last keyloop if ($inchar eq "q");
 	}
 	
-exit_configurator:
 	pause_stop();
 }
 
