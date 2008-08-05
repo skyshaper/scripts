@@ -326,6 +326,24 @@ exit_configurator:
 	pause_stop();
 }
 
+sub help()
+{
+	pause_start();
+	print "\e[2J\e[1;1H\e[1mBounceBox - help screen\e[m\n\n";
+	print << "EOF";
+q or SIGINT/TERM  - exit
+h or ?            - this help screen
+r                 - reset box position
++ and -           - add/remove balls
+< and >           - decrease/increase mxeymum FPS
+m                 - open the menu to change all parameters to your desire
+
+Write any byte to STDIN to continue...
+EOF
+	sysread(STDIN, $inchar, 1);
+	pause_stop();
+}
+
 add_ball() for (1..6);
 
 # get screen size
@@ -355,25 +373,9 @@ while (1)
 			$wanted_fps++ if ($inchar eq ">");
 			$wanted_fps-- if ($inchar eq "<");
 			
-			if ($inchar eq "h" or $inchar eq "?")
-			{
-				pause_start();
-				print "\e[2J\e[1;1H\e[1mBounceBox - help screen\e[m\n\n";
-				print << "EOF";
-q or SIGINT/TERM  - exit
-h or ?            - this help screen
-r                 - reset box position
-+ and -           - add/remove balls
-< and >           - decrease/increase mxeymum FPS
-m                 - open the menu to change all parameters to your desire
-
-Write any byte to STDIN to continue...
-EOF
-				sysread(STDIN, $inchar, 1);
-				pause_stop();
-			}
-			
+			help() if ($inchar eq "h" or $inchar eq "?");
 			menu() if ($inchar eq "m");
+			
 			$o{x} = $o{y} = 2 if ($inchar eq "r");
 		}
 	}
