@@ -3,6 +3,7 @@
 # License: WTFPL
 use strict;
 use warnings;
+use Term::ANSIColor;
 use Time::HiRes qw(time sleep);
 use POSIX;
 use Encode;
@@ -30,6 +31,8 @@ my %boxchars = (
 my @boxchars;
 my $boxchars;
 
+my @ballcolors = qw(black red green yellow blue magenta cyan white);
+
 sub boxchars_use($)
 {
 	@boxchars = ();
@@ -56,9 +59,10 @@ sub redraw_balls(;$)
 	
 	foreach my $ball (@balls)
 	{
-		printf("\e[%d;%dH\e[%smo\e[m",
+		printf("\e[%d;%dH%so%s",
 			$ball->{y} + $o{y} + 3, $ball->{x} + $o{x} + 2,
-			defined($ball->{color}) ? $ball->{color} : ""
+			color("bold $ball->{color}"),
+			color("reset")
 		);
 	}
 	printf("\e[%d;%dH", $o{resty}, $o{restx});
@@ -129,7 +133,7 @@ sub add_ball()
 	push(@balls, {
 		"x" => rand($o{w}), "y" => rand($o{h}),
 		"dx" => rand(10) + 10, "dy" => rand(10) + 10,
-		"color" => "1;" . (30 + int(rand(7.5) + 0.5))
+		"color" => $ballcolors[rand @ballcolors]
 	});
 }
 
@@ -229,10 +233,9 @@ sub menu()
 				my $ballcolor = "";
 				my $color;
 				my ($balldx, $balldy) = ("", "");
-				my %ballcolors = (black => 30, red => 31, green => 32, yellow => 33, blue => 34, magenta => 35, cyan => 36, white => 37);
-				until (exists($ballcolors{$ballcolor}))
+				until ($ballcolor ~~ @ballcolors)
 				{
-					$ballcolor = term_getline("Enter ball color (black red green yellow blue magenta cyan white): ");
+					$ballcolor = term_getline("Enter ball color (@ballcolors): ");
 					chomp $ballcolor;
 				}
 				until ($balldx =~ /^(?:[0-9]*\.)?[0-9]+$/)
@@ -248,7 +251,7 @@ sub menu()
 				push(@balls, {
 					"x" => rand($o{w}), "y" => rand($o{h}),
 					"dx" => $balldx, "dy" => $balldy,
-					"color" => "1;" . $ballcolors{$ballcolor}
+					"color" => $ballcolor
 				});
 			},
 		],
