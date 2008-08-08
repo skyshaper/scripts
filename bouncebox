@@ -229,7 +229,8 @@ sub menu()
 				my $ballcolor = "";
 				my $color;
 				my ($balldx, $balldy) = ("", "");
-				until ($ballcolor =~ /^(?:black|red|green|yellow|blue|magenta|cyan|white)$/)
+				my %ballcolors = (black => 30, red => 31, green => 32, yellow => 33, blue => 34, magenta => 35, cyan => 36, white => 37);
+				until (exists($ballcolors{$ballcolor}))
 				{
 					$ballcolor = term_getline("Enter ball color (black red green yellow blue magenta cyan white): ");
 					chomp $ballcolor;
@@ -244,18 +245,10 @@ sub menu()
 					$balldy = term_getline("Enter ball Y speed (chars/second, decimal allowed): ");
 					chomp $balldy;
 				}
-				$color = "30" if ($ballcolor eq "black");
-				$color = "31" if ($ballcolor eq "red");
-				$color = "32" if ($ballcolor eq "green");
-				$color = "33" if ($ballcolor eq "yellow");
-				$color = "34" if ($ballcolor eq "blue");
-				$color = "35" if ($ballcolor eq "magenta");
-				$color = "36" if ($ballcolor eq "cyan");
-				$color = "37" if ($ballcolor eq "white");
 				push(@balls, {
 					"x" => rand($o{w}), "y" => rand($o{h}),
 					"dx" => $balldx, "dy" => $balldy,
-					"color" => "1;" . $color
+					"color" => "1;" . $ballcolors{$ballcolor}
 				});
 			},
 		],
