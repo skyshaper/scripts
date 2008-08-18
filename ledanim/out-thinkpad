@@ -2,16 +2,50 @@
 use strict;
 use warnings;
 
+my %models = (
+	t23 => {
+		1 => 2,
+		2 => 7,
+		3 => 4,
+		0 => 4,
+	},
+	t40 => {
+		1 => 0,
+		2 => 2,
+		3 => 7,
+		0 => 7,
+	},
+);
+
 sub write_to_led {
 	open(LED, '>', '/proc/acpi/ibm/led') or die("Cannot open /proc/acpi/ibm/led: $!");
 	print LED shift;
 	close(LED);
 }
 
+sub print_models {
+	print STDERR "Supported models: " . join(' ', sort keys(%models)) . "\n";
+}
+
+if (@ARGV != 1) {
+	print STDERR "Usage: $0 MODEL\n";
+	print_models;
+	exit 1;
+}
+my $model = $ARGV[0];
+
+if (!defined($models{$model})) {
+	print STDERR "Model $model not supported\n";
+	print_models;
+	exit 1;
+}
+my %map = %{$models{$model}};
+
+
 while (<>) {
 	chomp;
 	/(.) (.)/;
 	my $state = ($2 eq "0" ? "off" : "on");
-	my $led = ($1 eq "1" ? "0" : ($1 eq "2" ? $1 : "7"));
+	my $led = $map{$1};
 	write_to_led("$led $state");
 }
