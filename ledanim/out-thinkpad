@@ -42,7 +42,7 @@ if (!defined($models{$model})) {
 my %map = %{$models{$model}};
 
 
-while (<>) {
+while (<STDIN>) {
 	chomp;
 	/(.) (.)/;
 	my $state = ($2 eq "0" ? "off" : "on");
