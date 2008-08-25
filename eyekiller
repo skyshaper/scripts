@@ -1,0 +1,54 @@
+#!/usr/bin/env perl
+# By Zaba, Public Domain
+use strict;
+use warnings;
+
+use Curses;
+my $window = new Curses;
+my $timeout = shift || 0;
+my ($i, $j, $k, $f, $b, $pair, $pair_num)=(0,0,0,0,0,0,0);
+
+start_color();
+
+my @colors = (
+	COLOR_BLACK,
+	COLOR_RED,
+	COLOR_GREEN,
+	COLOR_YELLOW,
+	COLOR_BLUE,
+	COLOR_MAGENTA,
+	COLOR_CYAN,
+	COLOR_WHITE,
+);
+
+$SIG{ALRM} = sub { exit 0 };
+alarm $timeout;
+
+while (1)
+{
+	init_pair($k, $colors[rand(@colors)], $colors[rand(@colors)]);
+
+	for ($i = 0; $i < LINES; ++$i)
+	{
+		for ($j = 0; $j < COLS; ++$j)
+		{
+			$pair_num = rand(COLOR_PAIRS)+1;
+			$pair = COLOR_PAIR($pair_num);
+			pair_content($pair_num, $f, $b);
+			unless ($f == COLOR_BLACK)
+			{
+				# Random color pair
+				$window->attron($pair);
+				# Random ascii char ((0..94)+32 = 32..126)
+				$window->addch($i, $j, chr(rand(95)+32));
+				$window->attroff($pair);
+			}
+		}
+		$window->refresh;
+	}
+	$k++;
+#	$window->clear() if (int rand(2));
+}
+
+END { endwin }
+
