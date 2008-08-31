@@ -1,6 +1,8 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+use Switch;
+use 5.010;
 
 my %models = (
 	t23 => {
@@ -27,12 +29,32 @@ sub print_models {
 	print STDERR "Supported models: " . join(' ', sort keys(%models)) . "\n";
 }
 
-if (@ARGV != 1) {
+sub detect_model {
+	if (!open(DMI, "<", "/sys/class/dmi/id/board_name"))
+	{
+		print STDERR
+		"Model auto-detection failed!\n" .
+		"You might want to specify the model as a command-line argument.\n";
+		return;
+	}
+	my $model_id;
+	sysread(DMI, $model_id, 4);
+	close(DMI);
+	
+	switch ($model_id)
+	{
+		case (/^2647$/) { return "t23"; }
+		case (/^237[34689]$/) { return "t40"; }
+	}
+}
+
+if (@ARGV > 1) {
 	print STDERR "Usage: $0 MODEL\n";
 	print_models;
 	exit 1;
 }
-my $model = $ARGV[0];
+my $detected_model = detect_model;
+my $model = $ARGV[0] // $detected_model;
 
 if (!defined($models{$model})) {
 	print STDERR "Model $model not supported\n";
