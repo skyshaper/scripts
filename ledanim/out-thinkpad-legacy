@@ -4,22 +4,20 @@ use warnings;
 
 my %models = (
 	t23 => {
-		1 => 'green:batt',
-		2 => ':standby',
-		3 => ':bay_active',
+		1 => 2,
+		2 => 7,
+		3 => 4,
 	},
 	t40 => {
-		1 => ':power',
-		2 => 'green:batt',
-		3 => ':standby',
+		1 => 0,
+		2 => 2,
+		3 => 7,
 	},
 );
 
 sub write_to_led {
-    my($led, $state) = @_;
-	my $file = "/sys/class/leds/tpacpi:$led/brightness";
-	open(LED, '>', $file) or die("Cannot open $file: $!");
-	print LED $state;
+	open(LED, '>', '/proc/acpi/ibm/led') or die("Cannot open /proc/acpi/ibm/led: $!");
+	print LED shift;
 	close(LED);
 }
 
@@ -45,8 +43,9 @@ my %map = %{$models{$model}};
 while (<STDIN>) {
 	chomp;
 	/(.) (.)/;
+	my $state = ($2 eq "0" ? "off" : "on");
 	my $led = $map{$1};
     if (defined($led)) {
-        write_to_led($led, $2);
+        write_to_led("$led $state");
     }
 }
