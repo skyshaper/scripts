@@ -7,13 +7,11 @@ my %models = (
 		1 => 2,
 		2 => 7,
 		3 => 4,
-		0 => 4,
 	},
 	t40 => {
 		1 => 0,
 		2 => 2,
 		3 => 7,
-		0 => 7,
 	},
 );
 
@@ -47,5 +45,7 @@ while (<STDIN>) {
 	/(.) (.)/;
 	my $state = ($2 eq "0" ? "off" : "on");
 	my $led = $map{$1};
-	write_to_led("$led $state");
+    if (defined($led)) {
+        write_to_led("$led $state");
+    }
 }
