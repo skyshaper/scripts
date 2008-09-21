@@ -1,0 +1,110 @@
+#!/usr/bin/env perl
+## Senseless lights simulation
+## Written 2008 by Daniel Friesel <derf@derf.homelinux.org>
+
+## I, the copyright holder of this work, hereby release it
+## into the public domain. This applies worldwide.
+## In case this is not legally possible,
+## I grant any entity the right to use this work for any purpose,
+## without any conditions, unless such conditions are required by law.
+
+use feature 'switch';
+use strict;
+use utf8;
+use warnings;
+use Curses;
+use Time::HiRes 'usleep';
+
+initscr;
+noecho;
+cbreak;
+keypad($stdscr, 1);
+curs_set('invisible');
+start_color;
+init_pair(1, COLOR_RED, COLOR_BLACK);
+init_pair(2, COLOR_YELLOW, COLOR_BLACK);
+init_pair(3, COLOR_GREEN, COLOR_BLACK);
+my $int = 100;
+my $cur = 0;
+my $max = 60000;
+my $tlight;
+my $nextstate;
+my $i;
+
+sub light_state($$$) {
+	my ($i, $state, $char) = @_;
+	my $ret = ' ';
+	given($i) {
+		when(1) {
+			if ($state < 2) {$ret = $char}
+		}
+		when(2) {
+			if ($state % 2) {$ret = $char}
+		}
+		when(3) {
+			if ($state == 2) {$ret = $char}
+		}
+	}
+	return($ret);
+}
+
+sub draw_light($) {
+	my $light = shift;
+	my $char = $light->{char} || '●';
+	my ($y, $x) = @{$light->{position}};
+	my $i;
+
+	addstr($y, $x, '╭─╮');
+	for ($i = $y+1; $i-$y <= 3; $i++) {
+		addstr($i, $x, '│');
+		attron(COLOR_PAIR($i-$y));
+		addstr($i, $x+1, light_state($i-$y, $light->{state}, $char));
+		attroff(COLOR_PAIR($i-$y));
+		addstr($i, $x+2, '│');
+	}
+	addstr($y+4, $x, '╰─╯');
+	refresh;
+}
+
+my $lights = [
+	{
+		position => [5, 30],
+		state    => 0,
+		times    => [30000, 9500, 10000, 28000],
+	},
+	{
+		position => [5, 27],
+		state    => 0,
+		times    => [59900, 39500, 40000, 58000],
+		char     => '←',
+	},
+	{
+		position => [5, 33],
+		state    => 0,
+		times    => [30000, 4500, 5000, 28000],
+		char     => '→',
+	},
+];
+
+foreach(@$lights) {
+	draw_light($_);
+}
+refresh;
+while(usleep($int*1000)) {
+	$cur += $int;
+	if ($cur > $max) {
+		$cur = 0;
+	}
+	for($i = 0; exists($lights->[$i]); $i++) {
+		$tlight = $lights->[$i];
+		$nextstate = $tlight->{state} + 1;
+		$nextstate = 0 if ($nextstate > 3);
+		if ($tlight->{times}->[$nextstate] == $cur) {
+			$tlight->{state} = $nextstate;
+			draw_light($tlight);
+		}
+		$lights->[$i] = $tlight;
+	}
+}
+
+endwin;
