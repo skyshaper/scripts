@@ -28,7 +28,7 @@ sub qrev
 }
 
 my %opts;
-getopts('-d:', \%opts);
+getopts('vd:', \%opts);
 my $pong = shift // './pong';
 
 my ($pong_in, $pong_out, $input, $reversed);
@@ -46,12 +46,22 @@ while ($input = <$pong_out>)
 		++$count;
 		$reversed = qrev($input);
 		print $pong_in $reversed, "\n";
-		unless ($opts{d})
+
+		# If we've no -v, just print the count.
+		unless ($opts{v})
 		{
 			print "\e[`$count";
-		} else {
-			print $input, "\n";
+		}
+
+		# If we have a delay, sleep it now.
+		if ($opts{d})
+		{
 			sleep $opts{d};
+		}
+
+		# If we're given -v, print some more prettiness.
+		if ($opts{v}) {
+			print $input, "\n";
 			print $reversed, "\n";
 		}
 	} else {
