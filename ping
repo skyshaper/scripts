@@ -9,6 +9,24 @@ use Getopt::Std;
 
 $| = 1;
 
+sub qrev
+{
+	my $str = shift;
+	my $ret = reverse($str);
+	my $len = length($ret);
+	my $mistake = 0; # TODO Calculate this properly.
+
+	for (my $i = 0; $i < $len; ++$i)
+	{
+		if (rand(1) < $mistake) # XXX
+		{
+			substr($ret, $i) ++; # XXX Make proper mistakes.
+		}
+	}
+
+	return $ret;
+}
+
 my %opts;
 getopts('-d:', \%opts);
 my $pong = shift // './pong';
@@ -26,7 +44,7 @@ while ($input = <$pong_out>)
 	if ($input =~ m/^|/)
 	{
 		++$count;
-		$reversed = scalar(reverse($input));
+		$reversed = qrev($input);
 		print $pong_in $reversed, "\n";
 		unless ($opts{d})
 		{
