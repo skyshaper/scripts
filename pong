@@ -6,6 +6,9 @@
 # License: Public Domain.
 use strict;
 use warnings;
+
+$| = 1;
+
 my$c="|.";print"$c\n";while(<>){
 chomp;die'You lose'unless(reverse
 eq$c);$c.=('.',',',':',';')[rand

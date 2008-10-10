@@ -1,0 +1,44 @@
+#!/usr/bin/env perl
+# ping - the pong player.  The pong script has to have autoflushing on, it
+# seems.  By Zaba.  It's in public domain as well.  What did you expect?
+use strict;
+use warnings;
+use IPC::Open2;
+use Time::HiRes qw|sleep|;
+
+$| = 1;
+
+# The executable.
+my $pong = shift // die "The first parameter has to be the pong program to use";
+# If the delay is non-zero, we will print game progress too.
+my $delay = shift // 0;
+
+my ($pong_in, $pong_out, $input, $reversed);
+my $count = 0;
+my $pid = open2($pong_out, $pong_in, $pong);
+print "Pong running - PID $pid\n\n";
+
+$SIG{INT} = $SIG{TERM} = sub { print "\e[`Final count: $count\n" };
+
+while ($input = <$pong_out>)
+{
+	chomp $input;
+	if ($input =~ m/^|/)
+	{
+		++$count;
+		$reversed = scalar(reverse($input));
+		print $pong_in $reversed, "\n";
+		unless ($delay)
+		{
+			print "\e[`$count";
+		} else {
+			print $input, "\n";
+			sleep $delay;
+			print $reversed, "\n";
+		}
+	} else {
+		print "$input\n";
+		exit 1;
+	}
+}
+
