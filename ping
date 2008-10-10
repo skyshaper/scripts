@@ -5,13 +5,13 @@ use strict;
 use warnings;
 use IPC::Open2;
 use Time::HiRes qw|sleep|;
+use Getopt::Std;
 
 $| = 1;
 
-# The executable.
-my $pong = shift // die "The first parameter has to be the pong program to use";
-# If the delay is non-zero, we will print game progress too.
-my $delay = shift // 0;
+my %opts;
+getopts('-d:', \%opts);
+my $pong = shift // './pong';
 
 my ($pong_in, $pong_out, $input, $reversed);
 my $count = 0;
@@ -28,12 +28,12 @@ while ($input = <$pong_out>)
 		++$count;
 		$reversed = scalar(reverse($input));
 		print $pong_in $reversed, "\n";
-		unless ($delay)
+		unless ($opts{d})
 		{
 			print "\e[`$count";
 		} else {
 			print $input, "\n";
-			sleep $delay;
+			sleep $opts{d};
 			print $reversed, "\n";
 		}
 	} else {
