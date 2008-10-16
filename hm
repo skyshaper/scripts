@@ -19,8 +19,8 @@ if ($options{g}) {
 	$char = 'hr';
 } else {
 	if (@ARGV) {
-		$char = shift;
-		$end = substr($char, -1, 1);
+		$char = substr($ARGV[0], 0, -1);
+		$end = substr($ARGV[0], -1, 1);
 	}
 }
 print(($char.$end x(int(rand(4))+1))x(int(rand(12)/10)+1).$marks[rand@marks]."\n")
