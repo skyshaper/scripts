@@ -5,7 +5,8 @@ use Getopt::Std;
 
 my @marks = ('', '.'x(int(rand(3))+1), '!');
 my %options;
-my $char;
+my $char = 'h';
+my $end = 'm';
 
 getopts('ugr', \%options);
 
@@ -17,9 +18,12 @@ if ($options{g}) {
 } elsif ($options{r}) {
 	$char = 'hr';
 } else {
-	$char = shift || 'h';
+	if (@ARGV) {
+		$char = shift;
+		$end = substr($char, -1, 1);
+	}
 }
-print(($char.'m'x(int(rand(4))+1))x(int(rand(12)/10)+1).$marks[rand@marks]."\n")
+print(($char.$end x(int(rand(4))+1))x(int(rand(12)/10)+1).$marks[rand@marks]."\n")
 
 __END__
 
@@ -35,8 +39,9 @@ B<hm> [ B<-u> ] [ B<-g>|B<-r>|I<string> ]
 
 B<hm> says 'hm' in different ways, such as 'hmm...', 'hm!' or 'hmmhmm'
 
-It does this by taking a string (by default 'h'), adding some 'm's, 
-maybe a repetition of all that, and then other fancy stuff
+It does this by taking a string (by default 'hm'), repeating it's last character
+some times, maybe doing all that again, and appending some dots or so
+to the end
 
 =head1 OPTIONS
 
@@ -48,11 +53,11 @@ Unicode. Adds the unicode variant of '...' to the possible word ends.
 
 =item B<-g>
 
-Use 'gr' as string, producing output like 'grm'
+Use 'grm' as string
 
 =item B<-r>
 
-Use 'hr' as string, producing output like 'hrm'
+Use 'hrm' as string
 
 =item I<string>
 
@@ -63,6 +68,8 @@ Use I<string> as string
 =head1 AUTHOR
 
 Daniel Friesel <derf@derf.homelinux.org>
+
+L<https://derf.homelinux.org/~derf/code/hm>
 
 =head1 LICENSE
 
