@@ -8,10 +8,10 @@ if (!$ARGV[0]) {
     exit 1;
 }
 
-my $content = get('http://bongster.de/schwul-o-meter.php?action=calc&name='
+my $content = get('http://bongster.de/scripte/schwulometer.pl?nick='
     . $ARGV[0]) or die "Could not get site\n";
 
-if ($content =~ /^<b>([0-9]{1,2}\.[0-9]{1,2}%)/m) {
+if ($content =~ m#<b>([0-9]{1,2},[0-9]{1,2}%)</b>#m) {
     print "$1\n";
 } else {
     print STDERR "Could not find percent\n";
