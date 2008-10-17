@@ -1,5 +1,12 @@
 #!/usr/bin/env python
 # By mxey.
+
+# Perhaps the purpose of this script might be a bit confusing, so..
+#
+# Python has an os module, and path submodule in that.  And the path submodule
+# imports os module again.  This script is intended to check how deep one can
+# recurse.
+
 import os
 
 def endless():
