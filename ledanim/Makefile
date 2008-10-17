@@ -3,3 +3,5 @@ out-alix: out-alix.c
 
 clean:
 	rm -f out-alix
+
+.PHONY: clean
