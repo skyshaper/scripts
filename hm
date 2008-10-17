@@ -42,11 +42,10 @@ B<hm> [ B<-u> ] [ B<-g>|B<-r>|I<string> ]
 
 =head1 DESCRIPTION
 
-B<hm> says 'hm' in different ways, such as 'hmm...', 'hm!' or 'hmmhmm'
+B<hm> says 'hm' in a variety of ways, such as 'hmm...', 'hm!' or 'hmmhmm'.
 
-It does this by taking a string (by default 'hm'), repeating it's last character
-some times, maybe doing all that again, and appending some dots or so
-to the end
+It does that by taking a string, repeating its last character several times,
+maybe doing all that again, and appending some punctuation to the end.
 
 =head1 OPTIONS
 
@@ -54,22 +53,23 @@ to the end
 
 =item B<-u>
 
-Unicode. Adds the unicode variant of '...' to the possible word ends.
+Use the unicode variant of '...'.
 
 =item B<-g>
 
-Use 'grm' as string
+Use 'grm' as the string.
 
 =item B<-r>
 
-Use 'hrm' as string
+Use 'hrm' as the string.
 
 =item I<string>
 
-Use I<string> as string. When this argument is not present,
-the program name ($0) is used as string
+Use I<string> as the string.
 
 =back
+
+When no arguments are given, the program name is used as the string.
 
 =head1 AUTHOR
 
