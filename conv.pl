@@ -41,6 +41,10 @@ attempt to mail the system administrator about the error.  If that fails, it
 will make an attempt to write the error to STDOUT.  In case that does not end
 with success, it will terminate itself with SIGQUIT.
 
+=head1 AUTHOR
+
+Vsevolod Kozlov <zaba@thorium.homeunix.org>
+
 =head1 NOTES
 
 Full of bugs, since it's been written by professinal cryptologists.  Notably
