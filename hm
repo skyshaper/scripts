@@ -5,8 +5,14 @@ use Getopt::Std;
 
 my @marks = ('', '.'x(int(rand(3))+1), '!');
 my %options;
-my $char = 'h';
-my $end = 'm';
+my $char;
+my $end;
+
+sub parse($) {
+	my $word = shift;
+	$char = substr($word, 0, -1);
+	$end = substr($word, -1, 1);
+}
 
 getopts('ugr', \%options);
 
@@ -17,11 +23,10 @@ if ($options{g}) {
 	$char = 'gr';
 } elsif ($options{r}) {
 	$char = 'hr';
+} elsif (@ARGV) {
+	parse(shift);
 } else {
-	if (@ARGV) {
-		$char = substr($ARGV[0], 0, -1);
-		$end = substr($ARGV[0], -1, 1);
-	}
+	parse((split(/\//, $0))[-1]);
 }
 print(($char.$end x(int(rand(4))+1))x(int(rand(12)/10)+1).$marks[rand@marks]."\n")
 
@@ -61,7 +66,8 @@ Use 'hrm' as string
 
 =item I<string>
 
-Use I<string> as string
+Use I<string> as string. When this argument is not present,
+the program name ($0) is used as string
 
 =back
 
