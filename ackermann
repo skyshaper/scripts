@@ -4,8 +4,9 @@
 
 use strict;
 use warnings;
+no warnings 'recursion';
 
-sub ackermann($$)
+sub ackermann
 {
 	my ($x, $y) = @_;
 	print STDERR "ackermann($x, $y);\n";
