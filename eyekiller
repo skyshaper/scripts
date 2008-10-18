@@ -47,7 +47,6 @@ while (1)
 		$window->refresh;
 	}
 	$k++;
-#	$window->clear() if (int rand(2));
 }
 
 END { endwin }
