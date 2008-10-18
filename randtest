@@ -26,7 +26,7 @@ my $hits = 0;
 my ($randval, $total, $i);
 $| = 1; # Autoflush.
 
-print "-" x ($one_round + 2) . "\n" unless ($quiet);
+print ".", "-" x $one_round, ".\n" unless ($quiet);
 for ($i = 0; $i < $rounds; ++$i)
 {
 	print "|" unless ($quiet);
@@ -44,7 +44,7 @@ for ($i = 0; $i < $rounds; ++$i)
 	}
 	print "|\n" unless ($quiet);
 }
-print "-" x ($one_round + 2) . "\n\n" unless($quiet);
+print "'", "-" x $one_round, "'\n\n" unless($quiet);
 
 print "$total rand() calls ($one_round*$rounds)\n";
 print $hits*100/$total . "% less or equal to $limit\n";
