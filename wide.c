@@ -1,6 +1,6 @@
 /*
  * Converts lowercase chars into wide Unicode equivalent
- * 
+ *
  * Written by penma
  *
  * [Ignores everything but lowercase chars, because the rest does not work]

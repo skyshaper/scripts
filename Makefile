@@ -11,7 +11,7 @@ bubblebabble: bubblebabble.c
 ledanim:
 	@$(MAKE) -C ledanim
 
-clean: 
+clean:
 	$(RM) wide bubblebabble
 	@$(MAKE) -C ledanim $@
 

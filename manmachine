@@ -45,15 +45,15 @@ while ($times < $word_len)
 	# Align it
 	print ' 'x$times;
 	# Print in normal color
-	print $colors{normal}; 
+	print $colors{normal};
 	# Print word and spaces as much times as we were requested
 	print (($word . (' ' x $word_len)) x $count);
 	# Reset the color
-	print $colors{none}; 
+	print $colors{none};
 	# Move to the beginning of the previous line
 	print $escapes{line_up};
 	# Sleep the delay. It can be a floating point number too.
-	sleep $delay; 
+	sleep $delay;
 	# Increase the counter.
 	$times ++;
 }
@@ -70,7 +70,7 @@ while ($times < $word_len)
 	# Temporary variable.
 	my $temp_line = "";
 	# Move one line down.
-	print $escapes{line_down}; 
+	print $escapes{line_down};
 	# Add whitespace. We'll chop the unneeded beginning away later.
 	$temp_line .= (' 'x$word_len);
 	# Loop around the letters to put the red color bit where needed
@@ -83,9 +83,9 @@ while ($times < $word_len)
 	$temp_line x= $count; # Duplicate the line
 	# Remove the unneeded whitespace in the beginning. We've some tail there, so
 	# we always match one space.
-	$temp_line =~ s/^  {$times}//; 
+	$temp_line =~ s/^  {$times}//;
 	# Print it over the old line
-	print $temp_line; 
+	print $temp_line;
 	sleep $vdelay; # Sleep..
 	$times ++; # Increase the counter.
 }
