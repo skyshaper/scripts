@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# By derf.
+# Written by a completely braindead part of derf.
 use strict;
 use warnings;
 
