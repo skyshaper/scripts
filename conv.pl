@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
-use strict;use warnings;my$min=32;my$max=126;my($c,@chars,$fn,$fh);if($fn=shift){open($fh,$fn)}else{open($fh,'/dev/stdin')}
-while(@chars=split//,<$fh>){for(@chars){$c=unpack("h",$_);print$c if(ord$c>=$min&&ord$c<=$max)}}
+use strict;use warnings;my$min=32;my$max=126;my($c,@chars,$fn,$fh);if($fn=shift
+){open($fh,$fn)}else{open($fh,'/dev/stdin')}while(@chars=split//,<$fh>){for(
+@chars){$c=unpack("h",$_);print$c if(ord$c>=$min&&ord$c<=$max)}}
 
 __END__
 
@@ -32,7 +33,7 @@ integers back to characters, using a less enhanced algorithm.  B<Warning>:
 since the algorithm used for converting hexadecimal integers to characters is
 less enhanced than algorithms used to convert characters to decimal integers or
 decimal integers to hexadecimal integers, the result might be incorrect and/or
-incorrect, and might be missing unprintable characters.  This is intended,
+incomplete, and might be missing unprintable characters.  This is intended,
 because usual humble user would be hurt by accidentally getting bell character.
 
 In the end of conversion using the algorithm described above, the resulting
