@@ -4,16 +4,23 @@ use strict;
 use warnings;
 use LWP::Simple;
 
-if (!$ARGV[0]) {
+if (!scalar(@ARGV)) {
     print STDERR "Name missing\n";
     exit 1;
 }
 
-my $content = get('http://bongster.de/scripte/schwulometer.pl?nick='
-    . $ARGV[0]) or die "Could not get site\n";
+my $content;
 
-if ($content =~ m#<b>([0-9]{1,2},[0-9]{1,2}%)</b>#m) {
-    print "$1\n";
-} else {
-    print STDERR "Could not find percent\n";
+for my $nick (@ARGV) {
+    $content = get('http://bongster.de/scripte/schwulometer.pl?nick='
+     . $nick) or die "Could not get site\n";
+
+    if ($content =~ m#<b>([0-9]{1,2},[0-9]{1,2}%)</b>#m) {
+        if (@ARGV > 1) {
+            print "$nick:\t";
+        }
+        print "$1\n";
+    } else {
+        print STDERR "Could not find percent\n";
+    }
 }
