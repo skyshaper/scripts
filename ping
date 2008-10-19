@@ -13,16 +13,16 @@ sub qrev
 {
 	my $str = shift;
 	my $ret = reverse($str);
-	my $len = length($ret);
-	my $mistake = 0; # TODO Calculate this properly.
-
-	for (my $i = 0; $i < $len; ++$i)
-	{
-		if (rand(1) < $mistake) # XXX
-		{
-			substr($ret, $i) ++; # XXX Make proper mistakes.
-		}
-	}
+#	my $len = length($ret);
+#	my $mistake = 0; # TODO Calculate this properly.
+#
+#	for (my $i = 0; $i < $len; ++$i)
+#	{
+#		if (rand(1) < $mistake) # XXX
+#		{
+#			substr($ret, $i) ++; # XXX Make proper mistakes.
+#		}
+#	}
 
 	return $ret;
 }
