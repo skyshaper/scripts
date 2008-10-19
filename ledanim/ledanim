@@ -29,7 +29,9 @@ while (1)
 
 __END__
 
-output of this program is to be piped into a program which reads lines of form
-<NUM> <STATE>
-from stdin and updates the LED according to it. three example programs are provided:
-out-stdout, out-thinkpad and out-alix
+Output of this program is to be piped into a program which reads lines of form
+"<NUM> <STATE>" from stdin and sets the state of LED <NUM> to <STATE>.  State
+is 1 for on and 0 for off.  Three example programs are provided: out-stdout,
+out-thinkpad and out-alix.
+
+Written by Lars Stoltenow.
