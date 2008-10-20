@@ -2,6 +2,6 @@ out-alix: out-alix.c
 	$(CC) -o $@ $<
 
 clean:
-	rm -f out-alix
+	$(RM) out-alix
 
 .PHONY: clean
