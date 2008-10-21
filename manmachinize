@@ -1,15 +1,11 @@
 #!/usr/bin/perl -w
 # License: Public Domain.
 use strict;
-use warnings;
 
-my $delay = shift;
-my $delay2 = shift;
-my $word = shift;
-
-usage() unless $word;
-usage() unless $delay2;
-usage() unless $delay;
+my $delay = shift // usage();
+my $delay2 = shift // usage();
+my $word = shift // usage();
+my $count = shift // usage();
 
 use Curses;
 use Time::HiRes qw(sleep);
@@ -24,6 +20,7 @@ sub usage
 	print "\tdelay\tDelay in seconds between words\n";
 	print "\tdelay\tDelay in printing vertically\n";
 	print "\tword\tWord to print\n";
+	print "\tcount\tHow many times to print the word (in a row)\n";
 	print "\n";
 	exit 1;
 }
@@ -32,6 +29,7 @@ sub print_manmachine
 {
 	my ($word) = @_;
 	initscr();
+	curs_set(0);
 	start_color();
 	init_pair(1, COLOR_RED, COLOR_BLACK);
 
@@ -40,16 +38,23 @@ sub print_manmachine
 	for(my ($i, $j) = (0, scalar @letters-1); $i < scalar @letters; ++$i, --$j)
 	{
 		move($j,$i);
-		printw($word);
+		for(my$d=$count;$d--;)
+		{
+			printw($word);
+			printw(" " x (scalar @letters-1));
+		}
 		refresh();
 		sleep($delay);
 	}
 	for(my $i = 0; $i < scalar @letters; ++$i)
 	{
-		move($i, scalar @letters-1);
-		attron(COLOR_PAIR(1));
-		printw($letters[$i]);
-		attroff(COLOR_PAIR(1));
+		for(my$f=$count;$f--;)
+		{
+			move($i, (((scalar @letters)*2)-1)*($f+1)-(scalar @letters));
+			attron(COLOR_PAIR(1));
+			printw($letters[$i]);
+			attroff(COLOR_PAIR(1));
+		}
 		refresh();
 		sleep($delay2);
 	}
