@@ -19,15 +19,15 @@ my $delay = shift || usage();
 my $vdelay = $delay / 10; # Optimal.
 
 my %colors = (
-	normal	=>	"\e[39m",
-	red		=>	"\e[31m",
-	none		=>	"\e[0m",
+	normal => "\e[39m",
+	red    => "\e[31m",
+	none   => "\e[0m",
 );
 
 my %escapes = (
-	clearscreen	=> "\e[2J\e[f",
-	line_down	=> "\e[1E",
-	line_up		=> "\e[1F",
+	clearscreen => "\e[2J\e[f",
+	line_down   => "\e[1E",
+	line_up     => "\e[1F",
 );
 
 my $word_len = length $word;
