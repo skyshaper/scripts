@@ -5,7 +5,7 @@ use warnings;
 use LWP::Simple;
 
 if (!scalar(@ARGV)) {
-    print STDERR "Name missing\n";
+    print STDERR "Usage: $0 name [name ...]\n";
     exit 1;
 }
 
@@ -13,7 +13,7 @@ my $content;
 
 for my $nick (@ARGV) {
     $content = get('http://bongster.de/scripte/schwulometer.pl?nick='
-     . $nick) or die "Could not get site\n";
+     . $nick) or die "Could not get site";
 
     if ($content =~ m#<b>([0-9]{1,2},[0-9]{1,2}%)</b>#m) {
         if (@ARGV > 1) {
