@@ -12,11 +12,10 @@ use Time::HiRes qw/sleep/;
 
 autoflush STDOUT 1;
 
-my $word  = shift || usage();
-my $count = shift || usage();
-my $delay = shift || usage();
-
-my $vdelay = $delay / 10; # Optimal.
+my $word  = shift // usage();
+my $count = shift // usage();
+my $delay = shift // usage();
+my $vdelay = shift // ($delay / 10); # Optimal.
 
 my %colors = (
 	normal => "\e[39m",
@@ -96,8 +95,10 @@ print "\n";
 
 sub usage
 {
-	print "$0 word count delay\n\tword\tWord to manmachinize\n\tcount\tTimes";
-	print " to print the word\n\tdelay\tHow much seconds to delay between ";
-	print "printing the words\n";
+	print "$0 word count delay [ vdelay ]\n".
+	      "\tword\tWord to manmachinize\n".
+	      "\tcount\tTimes to print the word\n".
+	      "\tdelay\tHow much seconds to delay between printing the words\n".
+		  "\tvdelay\tHow much seconds to delay between vertial prints\n";
 	exit 0;
 }
