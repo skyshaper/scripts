@@ -2,10 +2,10 @@
 # License: Public Domain.
 use strict;
 
-my $delay = shift // usage();
-my $delay2 = shift // usage();
 my $word = shift // usage();
 my $count = shift // usage();
+my $delay = shift // usage();
+my $delay2 = shift // usage();
 
 use Curses;
 use Time::HiRes qw(sleep);
@@ -16,11 +16,11 @@ print_manmachine($word);
 
 sub usage
 {
-	print "$0 [delay] [delay2] [word]\n";
-	print "\tdelay\tDelay in seconds between words\n";
-	print "\tdelay\tDelay in printing vertically\n";
+	print "$0 [ word [ count [ delay [ delay2 ]]]]\n";
 	print "\tword\tWord to print\n";
 	print "\tcount\tHow many times to print the word (in a row)\n";
+	print "\tdelay\tDelay in seconds between words\n";
+	print "\tdelay2\tDelay in printing vertically\n";
 	print "\n";
 	exit 1;
 }
