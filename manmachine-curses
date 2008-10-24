@@ -5,7 +5,7 @@ use strict;
 my $word = shift // usage();
 my $count = shift // usage();
 my $delay = shift // usage();
-my $delay2 = shift // usage();
+my $vdelay = shift // ($delay / 10);
 
 use Curses;
 use Time::HiRes qw(sleep);
@@ -16,11 +16,11 @@ print_manmachine($word);
 
 sub usage
 {
-	print "$0 [ word [ count [ delay [ delay2 ]]]]\n";
+	print "$0 word count delay [ vdelay ]\n";
 	print "\tword\tWord to print\n";
 	print "\tcount\tHow many times to print the word (in a row)\n";
 	print "\tdelay\tDelay in seconds between words\n";
-	print "\tdelay2\tDelay in printing vertically\n";
+	print "\tvdelay\tDelay in printing vertically\n";
 	print "\n";
 	exit 1;
 }
@@ -56,7 +56,7 @@ sub print_manmachine
 			attroff(COLOR_PAIR(1));
 		}
 		refresh();
-		sleep($delay2);
+		sleep($vdelay);
 	}
 	endwin();
 }
