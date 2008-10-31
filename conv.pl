@@ -38,9 +38,15 @@ because usual humble user would be hurt by accidentally getting bell character.
 
 In the end of conversion using the algorithm described above, the resulting
 data is written to STDOUT.  If conv.pl is not able to write to STDOUT, it will
-attempt to mail the system administrator about the error.  If that fails, it
-will make an attempt to write the error to STDOUT.  In case that does not end
-with success, it will terminate itself with SIGQUIT.
+attempt to mail the system administrator about the error using
+/usr/libexec/sendmail/sendmail, including the output of the run, B<errno>(3) value
+after B<write>(2) call and a core dump.  If that fails, it will make an attempt to
+write the error to STDERR.  In case that does not end with success, it will
+terminate itself with SIGQUIT and post a story on B<slashdot>(8).
+
+=head1 SEE ALSO
+
+B<ascii>(7), B<errno>(3), B<write>(2), B<sendmail>(8), B<slashdot>(8)
 
 =head1 AUTHOR
 
