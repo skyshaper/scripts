@@ -5,30 +5,28 @@ use Getopt::Std;
 
 my @marks = ('', '.'x(int(rand(3))+1), '!');
 my %options;
-my $char;
-my $end;
+my $beg;
+my $mid;
+my $end = '';
 
 sub parse($) {
 	my $word = shift;
-	$char = substr($word, 0, -1);
-	$end = substr($word, -1, 1);
+	$beg = substr($word, 0, -1);
+	$mid = substr($word, -1, 1);
 }
 
-getopts('ugr', \%options);
+getopts('u', \%options);
 
 if ($options{u}) {
 	push(@marks, '…');
-}
-if ($options{g}) {
-	$char = 'gr';
-} elsif ($options{r}) {
-	$char = 'hr';
-} elsif (@ARGV) {
+} elsif (@ARGV == 1) {
 	parse(shift);
+} elsif (@ARGV == 3) {
+	($beg, $mid, $end) = @ARGV;
 } else {
 	parse((split(/\//, $0))[-1]);
 }
-print(($char.$end x(int(rand(4))+1))x(int(rand(12)/10)+1).$marks[rand@marks]."\n")
+print(($beg.$mid x(int(rand(4))+1).$end)x(int(rand(12)/10)+1).$marks[rand@marks]."\n")
 
 __END__
 
@@ -38,14 +36,24 @@ hm - say hm
 
 =head1 SYNOPSIS
 
-B<hm> [ B<-u> ] [ B<-g>|B<-r>|I<string> ]
+B<hm> [ B<-u> ] [ I<string> | I<begin> I<middle> I<end> ]
 
 =head1 DESCRIPTION
 
 B<hm> says 'hm' in a variety of ways, such as 'hmm...', 'hm!' or 'hmmhmm'.
 
-It does that by taking a string, repeating its last character several times,
-maybe doing all that again, and appending some punctuation to the end.
+It uses three strings, which we will call begin, middle and end, and which are
+processed roughly like this:
+
+phrase = I<begin> [repeated 0 to 3 times: I<middle>] I<end>;  Print phrase
+one or two times;  Print punctuation
+
+If I<begin>, I<middle> and I<end> are specified on the commandline, they will
+bu directly put into the output
+
+Otherwise, B<hm> takes it's first argument (I<string>) or it's command name
+(B<hm>), uses it's last character as middle, the rest as begin, and leaves end
+empty.
 
 =head1 OPTIONS
 
@@ -53,23 +61,9 @@ maybe doing all that again, and appending some punctuation to the end.
 
 =item B<-u>
 
-Use the unicode variant of '...'.
-
-=item B<-g>
-
-Use 'grm' as the string.
-
-=item B<-r>
-
-Use 'hrm' as the string.
-
-=item I<string>
-
-Use I<string> as the string.
+Use the unicode variant of '...' in the punctuation
 
 =back
-
-When no arguments are given, the program name is used as the string.
 
 =head1 AUTHOR
 
