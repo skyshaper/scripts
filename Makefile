@@ -13,7 +13,7 @@ ledanim:
 	@$(MAKE) -C ledanim
 
 test:
-	$(PERL) -MTest::Harness -e 'runtests @ARGV' t/*.t
+	prove -s t/*.t
 
 clean:
 	$(RM) wide bubblebabble
