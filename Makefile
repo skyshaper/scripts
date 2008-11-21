@@ -1,4 +1,5 @@
 CFLAGS = -std=c99 -Wall -Wextra -pedantic
+PERL = /usr/bin/env perl
 
 all: wide bubblebabble ledanim
 
@@ -11,8 +12,11 @@ bubblebabble: bubblebabble.c
 ledanim:
 	@$(MAKE) -C ledanim
 
+test:
+	$(PERL) -MTest::Harness -e 'runtests @ARGV' t/*.t
+
 clean:
 	$(RM) wide bubblebabble
 	@$(MAKE) -C ledanim $@
 
-.PHONY: clean ledanim
+.PHONY: test clean ledanim
