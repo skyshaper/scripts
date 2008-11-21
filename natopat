@@ -1,0 +1,81 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+my %chars = (
+	'a' => 'alpha',
+	'b' => 'bravo',
+	'c' => 'charlie',
+	'd' => 'delta',
+	'e' => 'echo',
+	'f' => 'foxtrot',
+	'g' => 'golf',
+	'h' => 'hotel',
+	'i' => 'india',
+	'j' => 'juliet',
+	'k' => 'kilo',
+	'l' => 'lima',
+	'm' => 'mike',
+	'n' => 'november',
+	'o' => 'oscar',
+	'p' => 'papa',
+	'q' => 'quebec',
+	'r' => 'romeo',
+	's' => 'sierra',
+	't' => 'tango',
+	'u' => 'uniform',
+	'v' => 'victor',
+	'w' => 'whiskey',
+	'x' => 'x-ray',
+	'y' => 'yankee',
+	'z' => 'zulu',
+);
+
+for (keys %chars)
+{
+	$chars{uc($_)} = uc(substr($chars{$_},0,1)) . substr($chars{$_},1);
+}
+
+%chars = (
+	%chars,
+	'0' => 'nadazero',
+	'1' => 'unaone',
+	'2' => 'bissotwo',
+	'3' => 'terrathree',
+	'4' => 'kartefour',
+	'5' => 'pantafive',
+	'6' => 'soxisix',
+	'7' => 'setteseven',
+	'8' => 'oktoeight',
+	'9' => 'novenine',
+);
+
+while (<>)
+{
+	s/([a-zA-Z0-9])/$chars{$1} /g;
+	s/[a-zA-Z0-9]\K\s(?![a-zA-Z0-9])//g;
+	print
+}
+
+__END__
+
+=head1 NAME
+
+natopat - NATO phonetic alphabet translator
+
+=head1 SYNOPSIS
+
+B<natopat>
+
+=head1 DESCRIPTION
+
+B<natopat> reads strings from STDIN and translated chars to those of NATO
+phonetic alphabet.
+
+=head1 AUTHOR
+
+Vsevolod Kozlov <zaba@thorium.homeunix.org>
+
+=head1 LICENSE
+
+Do anything with it.
