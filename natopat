@@ -2,6 +2,11 @@
 use strict;
 use warnings;
 
+use Getopt::Std;
+
+our $opt_r = 0;
+getopts('r');
+
 my %chars = (
 	'a' => 'alpha',
 	'b' => 'bravo',
@@ -50,10 +55,17 @@ for (keys %chars)
 	'9' => 'novenine',
 );
 
+my $allwords = '(' . join ('|', values %chars) . ')';
+
 while (<>)
 {
-	s/([a-zA-Z0-9])/$chars{$1} /g;
-	s/[a-zA-Z0-9]\K\s(?![a-zA-Z0-9])//g;
+	unless ($opt_r)
+	{
+		s/([a-zA-Z0-9])/$chars{$1} /g;
+		s/(?<=[a-zA-Z])\s(?![a-zA-Z\s])//g;
+	} else {
+		s/$allwords\ ?/(grep{$chars{$_} eq $1} keys %chars)[0]/ego;
+	}
 	print
 }
 
@@ -65,12 +77,19 @@ natopat - NATO phonetic alphabet translator
 
 =head1 SYNOPSIS
 
-B<natopat>
+B<natopat> [ I<-r> ]
 
 =head1 DESCRIPTION
 
-B<natopat> reads strings from STDIN and translated chars to those of NATO
-phonetic alphabet.
+B<natopat> reads strings from STDIN and translates letters and digits to those
+of NATO phonetic alphabet.
+
+=head1 OPTIONS
+
+=item I<-r>
+
+Translate from phonetic alphabet to normal letters and digits.  The default is
+to do the opposite.
 
 =head1 AUTHOR
 
