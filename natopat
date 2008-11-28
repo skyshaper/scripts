@@ -59,6 +59,7 @@ my $allwords = '(' . join ('|', values %chars) . ')';
 
 while (<>)
 {
+	chomp;
 	unless ($opt_r)
 	{
 		s/([a-zA-Z0-9])/$chars{$1} /g;
@@ -67,7 +68,7 @@ while (<>)
 	} else {
 		s/$allwords\ ?/(grep{$chars{$_} eq $1} keys %chars)[0]/ego;
 	}
-	print
+	print $_, "\n"
 }
 
 __END__
