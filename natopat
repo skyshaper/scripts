@@ -38,7 +38,7 @@ my %chars = (
 
 for (keys %chars)
 {
-	$chars{uc($_)} = uc(substr($chars{$_},0,1)) . substr($chars{$_},1);
+	$chars{uc($_)} = ucfirst($chars{$_});
 }
 
 %chars = (
