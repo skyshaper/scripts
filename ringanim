@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Written by Lars Stoltenow <penma@penma.unbrained.org>
+# Written by Lars Stoltenow <penma@penma.de>
 # Licensed under WTFPL
 
 use strict;

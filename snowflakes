@@ -1,6 +1,6 @@
 #!/bin/bash
 # Snowflake - Draw falling snowflakes on the screen
-# Written by Lars Stoltenow <penma@penma.unbrained.org>
+# Written by Lars Stoltenow <penma@penma.de>
 # Licensed under WTFPL
 
 nomodechg=0
