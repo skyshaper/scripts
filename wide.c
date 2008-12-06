@@ -1,9 +1,10 @@
 /*
  * Converts lowercase chars into wide Unicode equivalent
  *
- * Written by penma
+ * Copyright (C) 2008 by Lars Stoltenow <penma@penma.de>
+ *                   and Daniel Friesel <derf@derf.homelinux.org>
  *
- * [Ignores everything but lowercase chars, because the rest does not work]
+ * License: WTFPL <http://sam.zoy.org/wtfpl>
  */
 #include <stdio.h>
 
@@ -11,12 +12,22 @@ int main()
 {
 	while (!feof(stdin))
 	{
-		unsigned char i = fgetc(stdin);
-		if ((i >= 97) && (i <= 122))
+		int i = fgetc(stdin);
+		if ((i >= 33) && (i <= 95))
 		{
 			fputc(0xef, stdout);
-			fputc(0xbc | (i >> 6), stdout);
+			fputc(0xbc, stdout);
+			fputc(i + 0x60, stdout);
+		}
+		else if ((i >= 96) && (i <= 126))
+		{
+			fputc(0xef, stdout);
+			fputc(0xbd, stdout);
 			fputc(i + 0x20, stdout);
+		}
+		else if (i != EOF)
+		{
+			fputc(i, stdout);
 		}
 	}
 }
