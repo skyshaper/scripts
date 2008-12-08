@@ -21,8 +21,10 @@ if ($options{u}) {
 	push(@marks, '…');
 } elsif (@ARGV == 1) {
 	parse(shift);
-} elsif (@ARGV == 3) {
-	($beg, $mid, $end) = @ARGV;
+} elsif (@ARGV > 1) {
+	$beg = shift;
+	$mid = shift;
+	$end = shift || '';
 } else {
 	parse((split(/\//, $0))[-1]);
 }
@@ -36,7 +38,7 @@ hm - say hm
 
 =head1 SYNOPSIS
 
-B<hm> [ B<-u> ] [ I<string> | I<begin> I<middle> I<end> ]
+B<hm> [ B<-u> ] [ I<string> | I<begin> I<middle> [I<end>] ]
 
 =head1 DESCRIPTION
 
@@ -46,10 +48,10 @@ It uses three strings, which we will call begin, middle and end, and which are
 processed roughly like this:
 
 phrase = I<begin> [repeated 0 to 3 times: I<middle>] I<end>;  Print phrase
-one or two times;  Print punctuation;
+one or two times;  Print punctuation.
 
 If I<begin>, I<middle> and I<end> are specified on the commandline, they will
-be directly put into the output.
+be directly put into the output. If I<end> is left out, it will be blank.
 
 Otherwise, B<hm> takes its first argument (I<string>) or its command name
 (B<hm>), uses its last character for middle, the rest for begin, and leaves end
@@ -61,7 +63,7 @@ empty.
 
 =item B<-u>
 
-Use the unicode variant of '...' in the punctuation.
+Use the unicode variant of '...' in the punctuation
 
 =back
 
