@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
-# ping - the pong player.  The pong script has to have autoflushing on, it
-# seems.  By Zaba.  It's in public domain as well.  What did you expect?
+# ping - the pong player.  The pong script has to have autoflushing on.
+# By Zaba.  It's in public domain.  What did you expect?
 use strict;
 use warnings;
 use IPC::Open2;
@@ -8,24 +8,6 @@ use Time::HiRes qw|sleep|;
 use Getopt::Std;
 
 $| = 1;
-
-sub qrev
-{
-	my $str = shift;
-	my $ret = reverse($str);
-#	my $len = length($ret);
-#	my $mistake = 0; # TODO Calculate this properly.
-#
-#	for (my $i = 0; $i < $len; ++$i)
-#	{
-#		if (rand(1) < $mistake) # XXX
-#		{
-#			substr($ret, $i) ++; # XXX Make proper mistakes.
-#		}
-#	}
-
-	return $ret;
-}
 
 my %opts;
 getopts('vd:', \%opts);
@@ -44,7 +26,7 @@ while ($input = <$pong_out>)
 	if ($input =~ m/^|/)
 	{
 		++$count;
-		$reversed = qrev($input);
+		$reversed = reverse($input);
 		print $pong_in $reversed, "\n";
 
 		# If we've no -v, just print the count.
