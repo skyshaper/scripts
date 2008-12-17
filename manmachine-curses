@@ -18,10 +18,9 @@ sub usage
 {
 	print "$0 word count delay [ vdelay ]\n";
 	print "\tword\tWord to print\n";
-	print "\tcount\tHow many times to print the word (in a row)\n";
-	print "\tdelay\tDelay in seconds between words\n";
-	print "\tvdelay\tDelay in printing vertically\n";
-	print "\n";
+	print "\tcount\tHow many times to print the word in one row\n";
+	print "\tdelay\tHow long to sleep between printing rows\n";
+	print "\tvdelay\tHow long to sleep between vertical prints\n";
 	exit 1;
 }
 

@@ -96,9 +96,9 @@ print "\n";
 sub usage
 {
 	print "$0 word count delay [ vdelay ]\n".
-	      "\tword\tWord to manmachinize\n".
-	      "\tcount\tTimes to print the word\n".
-	      "\tdelay\tHow much seconds to delay between printing the words\n".
-		  "\tvdelay\tHow much seconds to delay between vertial prints\n";
+	      "\tword\tWord to print\n".
+	      "\tcount\tHow many times to print the word in one row\n".
+	      "\tdelay\tHow long to sleep between printing rows\n".
+		  "\tvdelay\tHow long to sleep between vertical prints\n";
 	exit 0;
 }
