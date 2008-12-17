@@ -4,12 +4,15 @@
 use strict;
 use warnings;
 use bignum;
+use Getopt::Std;
 
+my %opts = (v => 0);
+getopts('v', \%opts);
 my $e = "a(" . join(",", @ARGV) . ")";
 
 while (1)
 {
-	print "\e[1;31m" . length($e) . "\e[m   $e\n";
+	$opts{v} && print "\e[1;31m" . length($e) . "\e[m   $e\n";
 	
 	if ($e =~ /a\(([0-9]+),([0-9]+)\)/)
 	{
@@ -26,6 +29,7 @@ while (1)
 	}
 	else
 	{
+		$opts{v} || print "$e\n";
 		last;
 	}
 }
