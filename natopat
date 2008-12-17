@@ -79,12 +79,12 @@ natopat - NATO phonetic alphabet translator
 
 =head1 SYNOPSIS
 
-B<natopat> [ I<-r> ]
+B<natopat> [I<-r>]
 
 =head1 DESCRIPTION
 
-B<natopat> reads strings from STDIN and translates letters and digits to those
-of NATO phonetic alphabet.
+B<natopat> reads strings from STDIN and translates letters and digits to NATO
+phonetic alphabet.
 
 =head1 OPTIONS
 
