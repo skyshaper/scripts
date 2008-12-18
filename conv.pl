@@ -52,6 +52,10 @@ B<ascii>(7), B<errno>(3), B<write>(2), B<sendmail>(8), B<slashdot>(8)
 
 Copyright (c) 2008 Vsevolod Kozlov <zaba@thorium.homeunix.org>
 
+=head1 LICENSE
+
+Do anything with it.
+
 =head1 NOTES
 
 Full of bugs, since it's been written by professinal cryptologists.  Notably

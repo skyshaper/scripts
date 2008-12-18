@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
-# License: Public Domain.
 # Copyright (c) 2008 Vsevolod Kozlov <zaba@thorium.homeunix.org>
+# License: Public Domain.
 #
 # Tool for testing your beloved RNG.
 # Usage:
