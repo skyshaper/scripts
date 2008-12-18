@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
-# By mxey the great, the nightmare of kernels.
+# Copyright (c) Maximilian Gaß <mxey@cloudconnected.org>
+# License: XXX
 use strict;
 use warnings;
 use LWP::Simple;
