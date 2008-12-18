@@ -2,7 +2,7 @@
 # xstrobo - Adaption of the famous Augenkrebs Flash movies on the Internet
 # using xgamma
 
-# Written by Lars Stoltenow <penma@penma.de>
+# Copyright (c) 2008 Lars Stoltenow <penma@penma.de>
 # Licensed under WTFPL
 # No warranty for eye damage!
 use strict;

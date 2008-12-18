@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Lars Stoltenow
+ * Copyright (c) 2008 Lars Stoltenow <penma@penma.de>
  *
  * Based on OpenSSH code:
  * Copyright (c) 2000, 2001 Markus Friedl.  All rights reserved.

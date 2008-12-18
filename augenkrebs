@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # A convenience wrapper around xstrobo
-# Written by Lars Stoltenow <penma@penma.de>
+# Copyright (c) 2008 Lars Stoltenow <penma@penma.de>
 # Licensed under WTFPL
 
 mode="$1"

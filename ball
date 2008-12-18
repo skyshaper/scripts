@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# Written by Lars Stoltenow <penma@penma.de>
+# Copyright (c) 2008 Lars Stoltenow <penma@penma.de>
 
 use strict;
 my($s,$e,$x,$y,$f)=(16/8,20,0,7,ord$");

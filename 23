@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Written by a completely braindead part of derf.
+# Copyright (c) 2008 a completely braindead part of derf.
 use strict;
 use warnings;
 

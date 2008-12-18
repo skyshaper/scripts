@@ -1,7 +1,6 @@
 #!/usr/bin/env perl
 # License: Public Domain.
-# Written by me, the one who feeds you with public
-# domain-licensed scripts of questionable usuablity.
+# Copyright (c) 2008 Vsevolod Kozlov <zaba@thorium.homeunix.org>
 #
 # Tool for testing your beloved RNG.
 # Usage:

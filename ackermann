@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# Written by penma
+# Copyright (c) 2008 Lars Stoltenow <penma@penma.de>
 # License: WTFPL
 use strict;
 use warnings;

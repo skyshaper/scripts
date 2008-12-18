@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # 2fel - Talk like berni ;D
-# Written by derf
+# Copyright (c) 2008 Daniel Friesel
 # Licensed under WTFPL
 use strict;
 use warnings;
