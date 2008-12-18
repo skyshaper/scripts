@@ -50,7 +50,7 @@ B<ascii>(7), B<errno>(3), B<write>(2), B<sendmail>(8), B<slashdot>(8)
 
 =head1 AUTHOR
 
-Vsevolod Kozlov <zaba@thorium.homeunix.org>
+Copyright (c) 2008 Vsevolod Kozlov <zaba@thorium.homeunix.org>
 
 =head1 NOTES
 

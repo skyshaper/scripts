@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
-# By Zaba, Public Domain
+# Copyright (c) 2008 Vsevolod Kozlov <zaba@thorium.homeunix.org>
+# License: public domain.
 use strict;
 use warnings;
 

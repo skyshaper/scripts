@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 # ping - the pong player.  The pong script has to have autoflushing on.
-# By Zaba.  It's in public domain.  What did you expect?
+# Copyright (c) 2008 Vsevolod Kozlov <zaba@thorium.homeunix.org>
+# It's in public domain.  What did you expect?
 use strict;
 use warnings;
 use IPC::Open2;

@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # manmachine.pl - print word in kraftwerk man machine fashion.
-# By Zaba.
+# Copyright (c) 2008 Vsevolod Kozlov <zaba@thorium.homeunix.org>
 # Usage: may the usage() be with you.
 # License: Public Domain.
 

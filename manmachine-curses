@@ -1,4 +1,5 @@
 #!/usr/bin/perl -w
+# Copyright (c) 2008 Vsevolod Kozlov <zaba@thorium.homeunix.org>
 # License: Public Domain.
 use strict;
 
@@ -11,8 +12,6 @@ use Curses;
 use Time::HiRes qw(sleep);
 
 print_manmachine($word);
-
-#####
 
 sub usage
 {
@@ -59,5 +58,3 @@ sub print_manmachine
 	}
 	endwin();
 }
-
-# Written by Zaba
