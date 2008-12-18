@@ -1,3 +1,4 @@
 #!/usr/bin/env perl
+# Copyright (c) 2008 Lars Stoltenow <penma@penma.de>
 $|=1;while(<>){chomp;/(.) (.)/;$leds[$1]=$2;print"\r";for(1..3){print
 "\e[1;30m.\e[m "unless$leds[$_];print"\e[1;32mo\e[m "if$leds[$_];}}

@@ -1,3 +1,4 @@
+/* Copyright (c) 2008 Lars Stoltenow <penma@penma.de> */
 #include <unistd.h>
 #include <fcntl.h>
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+# Copyright (c) 2008 Lars Stoltenow <penma@penma.de>
 use strict;
 use warnings;
 
