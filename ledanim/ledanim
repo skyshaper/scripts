@@ -35,3 +35,4 @@ is 1 for on and 0 for off.  Three example programs are provided: out-stdout,
 out-thinkpad and out-alix.
 
 Copyright (c) 2008 Lars Stoltenow.
+Licensed under WTFPL.

@@ -1,3 +1,5 @@
+# Copyright (c) 2008 Vsevolod Kozlov <zaba@thorium.homeunix.org>
+# License: Public domain.
 use strict;
 use warnings;
 use Test::Exception;
