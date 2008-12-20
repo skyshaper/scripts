@@ -11,7 +11,8 @@ function usage()
         cat << EOT
 Usage: $0 [ options ] <freq1> <char1> [ <freq2> <char2> [ ... ] ]
 
-freq1, freq2, ... freqn are the frequencies of which the given char1, char2, ... charn fall down the screen.
+freq1, freq2, ... freqn are the frequencies of which the given char1, char2,
+... charn fall down the screen.
 
         --help      or -h  Show this help message.
         --nomodechg or -n  Don't change the screen mode.
@@ -23,14 +24,15 @@ do
         case "$1" in
         --help | -h ) usage; exit;;
         --nomodechg | -n ) nomodechg=1;;
-        * ) echo "$0: unknown option '$1'."; echo "'$0 --help' gives more options."; exit 1;;
+        *) echo "$0: unknown option '$1'."; echo "Try '$0 --help' for help.";
+        exit 1;;
         esac
 
         shift
 done
 
-# The main program, depending on the fact that all additional parameters are already passed.
-# Make sure there are enough arguments...
+# The main program, depending on the fact that all additional parameters are
+# already passed.  Make sure there are enough arguments...
 if [ $# -eq 0 ]
 then
         echo "$0: missing operands"

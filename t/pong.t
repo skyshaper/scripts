@@ -8,7 +8,7 @@ use IPC::Open3;
 
 my ($pong, $pong_out, $pong_in);
 
-lives_ok { $pong = open3($pong_in, $pong_out, $pong_out, './pong') } 'ran ./pong';
+lives_ok {$pong = open3($pong_in, $pong_out, $pong_out, './pong')} 'ran ./pong';
 
 cmp_ok(<$pong_out>, 'eq', "|.\n", "first output line is correct");
 

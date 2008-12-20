@@ -21,7 +21,7 @@ while (1)
 			{
 				$angle = $angle * 3.141592653528 * 2 / $LINES;
 				my $X = cos($angle) * $dist * 4 + 40;
-				my $Y =  sin($angle) * $dist + 12.5;
+				my $Y = sin($angle) * $dist + 12.5;
 				printf("\e[%2\$d;%1\$dH%3\$s", $X, $Y, $dist == $seldist ? "\e[1;32m*\e[m" : ".")
 					if (($X > 10 and $X < 70) and ($Y > 5 and $Y < 20));
 			}

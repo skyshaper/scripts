@@ -16,7 +16,8 @@ is($test1_output, "Alpha bravo Charlie",
 # Test 2
 my $test2_output = qx($natopat_path -r < t/natopat/test2);
 chomp $test2_output;
-is($test2_output, "AbCdEfGhIjKlMnOpQrStUvWxYz", 'value is converted back correctly');
+is($test2_output, "AbCdEfGhIjKlMnOpQrStUvWxYz",
+	'value is converted back correctly');
 
 # Test 3
 my $test3_output = qx($natopat_path < t/natopat/test3 | $natopat_path -r);
