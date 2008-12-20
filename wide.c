@@ -15,7 +15,7 @@ int main()
 		int i = fgetc(stdin);
 		if ((i >= 33) && (i <= 126))
 		{
-			int magic = ((i >> 5) + 1) >> 2;
+			int magic = (i + 32) >> 7;
 			fputc(0xef, stdout);
 			fputc(0xbc + magic, stdout);
 			fputc(i + 0x60 - (magic << 6), stdout);
