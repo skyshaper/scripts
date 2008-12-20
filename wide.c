@@ -13,17 +13,12 @@ int main()
 	while (!feof(stdin))
 	{
 		int i = fgetc(stdin);
-		if ((i >= 33) && (i <= 95))
+		int magic = ((i >> 5) + 1) >> 2;
+		if ((i >= 33) && (i <= 126))
 		{
 			fputc(0xef, stdout);
-			fputc(0xbc, stdout);
-			fputc(i + 0x60, stdout);
-		}
-		else if ((i >= 96) && (i <= 126))
-		{
-			fputc(0xef, stdout);
-			fputc(0xbd, stdout);
-			fputc(i + 0x20, stdout);
+			fputc(0xbc + magic, stdout);
+			fputc(i + 0x60 - (magic << 6), stdout);
 		}
 		else if (i != EOF)
 		{
