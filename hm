@@ -19,7 +19,7 @@ getopts('u', \%options);
 
 if ($options{u}) {
 	push(@marks, '…');
-} elsif (@ARGV == 1) {
+} if (@ARGV == 1) {
 	parse(shift);
 } elsif (@ARGV > 1) {
 	$beg = shift;
