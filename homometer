@@ -3,20 +3,27 @@
 # License: WTFPL
 use strict;
 use warnings;
-use LWP::Simple;
+use LWP::UserAgent;
 
 if (!scalar(@ARGV)) {
     print STDERR "Usage: $0 name [name ...]\n";
     exit 1;
 }
 
-my $content;
+my $ua = new LWP::UserAgent;
 
 for my $nick (@ARGV) {
-    $content = get('http://bongster.de/scripte/schwulometer.pl?nick='
-     . $nick) or die "Could not get site";
-
-    if ($content =~ m#<b>([0-9]{1,2},[0-9]{1,2}%)</b>#m) {
+	my $req = new HTTP::Request(POST => "http://www.bongster.de/scripte/schwulometer.pl");
+	$req->content_type("application/x-www-form-urlencoded");
+	$req->content("nick=$nick");
+	$req->header(Referer => "http://www.bongster.de/scripte/schwulometer.pl");
+	
+	my $res = $ua->request($req);
+	if (!$res->is_success) {
+		die("Could not get site: $res->status_line - dying");
+	}
+	
+    if ($res->content =~ m#<b>([0-9]{1,2},[0-9]{1,2}%)</b>#m) {
         if (@ARGV > 1) {
             print "$nick:\t";
         }
@@ -25,3 +32,4 @@ for my $nick (@ARGV) {
         print STDERR "Could not find percent\n";
     }
 }
+
