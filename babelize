@@ -1,0 +1,61 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use WWW::Mechanize;
+use HTML::Parser;
+use Getopt::Std;
+
+=head1 NAME
+
+B<babelize> - bastardize languages using babelfish
+
+=head1 SYNOPSIS
+
+B<babelize> [B<-a>] I<string>
+
+=head1 DESCRIPTION
+
+B<babelize> uses L<http://tashian.com/multibabel/> in order to perform some
+heavy bastardization of the words passed in I<string>.  If the B<-a> option is
+given, Asian languages are used in the process as well.
+
+=cut
+
+our $opt_a = 0;
+getopts ('a');
+$opt_a = $opt_a ? "yes" : undef;
+
+my $text = shift;
+my $mech = WWW::Mechanize->new;
+my $p = HTML::Parser->new();
+
+$mech->get ("http://tashian.com/perl/translate-babel.cgi");
+$mech->submit_form (fields => { english_text => $text, asian => $opt_a });
+
+while (1)
+{
+	my $is_tt = 0;
+	my @results;
+
+	# The data seems to be stored in <tt> tags, so we grab them.
+	$p->handler(text => sub { if ($is_tt) { push @results, shift } }, 'dtext');
+	$p->handler(start => sub { return unless shift eq "tt"; $is_tt = 1; }, 'tagname');
+	$p->handler(end => sub { return unless shift eq "tt"; $is_tt = 0; }, 'tagname');
+	$p->parse($mech->content);
+
+	print join "\n", @results, "\n";
+	print "Try again? (y/N) ";
+	last unless (<> =~ m/^y/i);
+	$mech->submit_form();
+}
+
+=head1 BUGS
+
+None known, poke me if you find something.
+
+=head1 AUTHOR & LICENSE
+
+Copyright © 2009, Vsevolod Kozlov <zaba@thorium.homeunix.org>
+
+You can do anything with this code, but I disclaim all responsibility that I
+can under the applicable law.
