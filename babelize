@@ -27,18 +27,7 @@ our $opt_e;
 getopts ('ae:');
 $opt_a = $opt_a ? "yes" : undef;
 
-my $text;
-if (defined $opt_e)
-{
-	$text = $opt_e;
-} else {
-	my $fname = shift // die "Usage: $0 [-a] [-e string] [file]\n";
-	open (my $file, "<", $fname) or die "Could not open $fname: $!";
-	{
-		local $/;
-		$text = <$file>;
-	}
-}
+my $text = join("", <>);
 
 my $mech = WWW::Mechanize->new;
 my $p = HTML::Parser->new();
