@@ -11,21 +11,35 @@ B<babelize> - bastardize languages using babelfish
 
 =head1 SYNOPSIS
 
-B<babelize> [B<-a>] I<string>
+B<babelize> [B<-a>] [B<-e> I<string>] [I<file>]
 
 =head1 DESCRIPTION
 
 B<babelize> uses L<http://tashian.com/multibabel/> in order to perform some
-heavy bastardization of the words passed in I<string>.  If the B<-a> option is
-given, Asian languages are used in the process as well.
+heavy bastardization of the words in the file I<file>, or the string I<string>,
+if B<-e> option is given.  If the B<-a> option is given, Asian languages are
+used in the process as well.
 
 =cut
 
 our $opt_a = 0;
-getopts ('a');
+our $opt_e;
+getopts ('ae:');
 $opt_a = $opt_a ? "yes" : undef;
 
-my $text = shift // die "Usage: $0 [-a] string\n";
+my $text;
+if (defined $opt_e)
+{
+	$text = $opt_e;
+} else {
+	my $fname = shift // die "Usage: $0 [-a] [-e string] [file]\n";
+	open (my $file, "<", $fname) or die "Could not open $fname: $!";
+	{
+		local $/;
+		$text = <$file>;
+	}
+}
+
 my $mech = WWW::Mechanize->new;
 my $p = HTML::Parser->new();
 
