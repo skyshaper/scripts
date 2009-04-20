@@ -32,8 +32,15 @@ if (defined $opt_e)
 {
 	$text = $opt_e;
 } else {
-	my $fname = shift // die "Usage: $0 [-a] [-e string] [file]\n";
-	open (my $file, "<", $fname) or die "Could not open $fname: $!";
+	my $fname = shift;
+	my $file;
+	if (defined $fname)
+	{
+		open ($file, "<", $fname) or die "Could not open $fname: $!";
+	} else {
+		$file = \*STDIN;
+	}
+
 	{
 		local $/;
 		$text = <$file>;
