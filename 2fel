@@ -1,23 +1,18 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl -p
 # 2fel - Talk like berni ;D
 # Copyright (c) 2008 Daniel Friesel
 # Licensed under WTFPL
-use strict;
-use warnings;
 
-while(<>) {
-	s/ein(s|z)/1/gi;
-	s/zwei/2/gi;
-	s/drei/3/gi;
-	s/vier/4/gi;
-	s/f(ue|ü)nf/5/gi;
-	s/se(chs|x)/6/gi;
-	s/sieben/7/gi;
-	s/acht/8/gi;
-	s/neun/9/gi;
-	s/null/0/gi;
-	s/zehn/10/gi;
-	s/elf/11/gi;
-	s/und/&/gi;
-	print;
-}
+s/ein(s|z)/1/gi;
+s/zwei/2/gi;
+s/drei/3/gi;
+s/vier/4/gi;
+s/f(ue|ü)nf/5/gi;
+s/se(chs|x)/6/gi;
+s/sieben/7/gi;
+s/acht/8/gi;
+s/neun/9/gi;
+s/null/0/gi;
+s/zehn/10/gi;
+s/elf/11/gi;
+s/und/&/gi;
