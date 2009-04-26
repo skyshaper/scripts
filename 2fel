@@ -6,18 +6,18 @@ use strict;
 use warnings;
 
 while(<>) {
-	s/ein(s|z)/1/g;
-	s/zwei/2/g;
-	s/drei/3/g;
-	s/vier/4/g;
-	s/f(ue|ü)nf/5/g;
-	s/se(chs|x)/6/g;
-	s/sieben/7/g;
-	s/acht/8/g;
-	s/neun/9/g;
-	s/null/0/g;
-	s/zehn/10/g;
-	s/elf/11/g;
-	s/und/&/g;
+	s/ein(s|z)/1/gi;
+	s/zwei/2/gi;
+	s/drei/3/gi;
+	s/vier/4/gi;
+	s/f(ue|ü)nf/5/gi;
+	s/se(chs|x)/6/gi;
+	s/sieben/7/gi;
+	s/acht/8/gi;
+	s/neun/9/gi;
+	s/null/0/gi;
+	s/zehn/10/gi;
+	s/elf/11/gi;
+	s/und/&/gi;
 	print;
 }
