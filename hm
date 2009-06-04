@@ -1,0 +1,78 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Getopt::Std;
+
+my @marks = ('', '.'x(int(rand(3))+1), '!');
+my %options;
+my $beg;
+my $mid;
+my $end = '';
+
+sub parse($) {
+	my $word = shift;
+	$beg = substr($word, 0, -1);
+	$mid = substr($word, -1, 1);
+}
+
+getopts('u', \%options);
+
+if ($options{u}) {
+	push(@marks, '…');
+} if (@ARGV == 1) {
+	parse(shift);
+} elsif (@ARGV > 1) {
+	$beg = shift;
+	$mid = shift;
+	$end = shift || '';
+} else {
+	parse((split(/\//, $0))[-1]);
+}
+print(($beg.$mid x(int(rand(4))+1).$end)x(int(rand(12)/10)+1).$marks[rand@marks]."\n")
+
+__END__
+
+=head1 NAME
+
+hm - say hm
+
+=head1 SYNOPSIS
+
+B<hm> [ B<-u> ] [ I<string> | I<begin> I<middle> [I<end>] ]
+
+=head1 DESCRIPTION
+
+B<hm> says 'hm' in a variety of ways, such as 'hmm...', 'hm!' or 'hmmhmm'.
+
+It uses three strings, which we will call begin, middle and end, and which are
+processed roughly like this:
+
+phrase = I<begin> [repeated 0 to 3 times: I<middle>] I<end>;  Print phrase
+one or two times;  Print punctuation.
+
+If I<begin>, I<middle> and I<end> are specified on the commandline, they will
+be directly put into the output. If I<end> is left out, it will be blank.
+
+Otherwise, B<hm> takes its first argument (I<string>) or its command name
+(B<hm>), uses its last character for middle, the rest for begin, and leaves end
+empty.
+
+=head1 OPTIONS
+
+=over
+
+=item B<-u>
+
+Use the unicode variant of '...' in the punctuation
+
+=back
+
+=head1 AUTHOR
+
+Copyright (c) 2009 Daniel Friesel <derf@derf.homelinux.org>
+
+L<https://derf.homelinux.org/~derf/code/hm>
+
+=head1 LICENSE
+
+  0. You just DO WHAT THE FUCK YOU WANT TO.
