@@ -1,0 +1,6 @@
+#!/usr/bin/env perl
+
+while(<>) {
+    s/[A-Z][a-z]+/Konstruktion/g;
+    print;
+}
