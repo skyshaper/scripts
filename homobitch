@@ -1,6 +1,8 @@
 #!/usr/bin/env perl
 
+use encoding ':locale';
+
 while(<>) {
-    s/[A-Z][a-z]+/Konstruktion/g;
+    s/\p{Upper}\p{Lower}+/Konstruktion/g;
     print;
 }
