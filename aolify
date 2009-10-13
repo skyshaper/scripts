@@ -1,0 +1,2 @@
+#!/usr/bin/env perl
+print map { $_ = sprintf("%08b", ord($_)); s/0/:D/g; s/1/:\)/g; $_ } split// while(<>);
