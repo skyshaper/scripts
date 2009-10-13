@@ -1,0 +1,2 @@
+#!/usr/bin/env perl
+print map { y/://d; y/D)/01/; pack 'B*', $_ } <>;
