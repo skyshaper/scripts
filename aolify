@@ -1,2 +1,2 @@
 #!/usr/bin/env perl
-print map { s/(.)/unpack 'B*', $1/emsg; y/01/D)/; s/(.)/:$1/g; $_ } <>;
+print map { $_ = unpack 'B*', $_; y/01/D)/; s/(.)/:$1/g; $_ } <>;
