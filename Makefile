@@ -1,7 +1,10 @@
 CFLAGS = -std=c99 -Wall -Wextra -pedantic
 PERL = /usr/bin/env perl
 
-all: wide bubblebabble ledanim
+all: wide bubblebabble ledanim pulse
+
+pulse:
+	@${MAKE} -C pulse
 
 wide: wide.c
 	$(CC) -o $@ $(CFLAGS) $<
@@ -18,5 +21,6 @@ test:
 clean:
 	$(RM) wide bubblebabble
 	@$(MAKE) -C ledanim $@
+	@${MAKE} -C pulse $@
 
-.PHONY: test clean ledanim
+.PHONY: test clean ledanim pulse
