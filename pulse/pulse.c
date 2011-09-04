@@ -54,8 +54,8 @@ int main(int argc, char **argv) {
 		}
 
 		double as_hour = time_pulse * 24 / 1000;
-		double as_minute = (as_hour - floor(as_hour)) * 60;
-		double as_second = (as_minute - floor(as_minute)) * 60;
+		double as_minute = fmod(as_hour, 1.0) * 60;
+		double as_second = fmod(as_minute, 1.0) * 60;
 
 		printf(
 			"%02.f:%02.f:%02.f\n",
