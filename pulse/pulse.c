@@ -5,6 +5,7 @@
  * Original code by guenther, minor changes by derf
  */
 
+#include <math.h>
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,22 +21,47 @@ int main(int argc, char **argv) {
 
 	memset(&tm_arg, 0, sizeof(tm_arg));
 
-	if((argc == 3) && (strcmp(argv[1], "-d") == 0)) {
+	if((argc == 3) && !strcmp(argv[1], "-d")) {
 		if(sscanf(argv[2], "%2u:%2u:%2u",
 				&tm_arg.tm_hour,
 				&tm_arg.tm_min,
 				&tm_arg.tm_sec) < 2) {
 
 			fputs("Usage: pulse -d HH:MM[:SS]\n", stderr);
-			exit(EXIT_FAILURE);
+			return EXIT_FAILURE;
 		}
 		if((tm_arg.tm_hour > 23) ||
 				(tm_arg.tm_min > 59) ||
 				(tm_arg.tm_sec > 59)) {
 			fputs("Invalid timestamp\n", stderr);
-			exit(EXIT_FAILURE);
+			return EXIT_FAILURE;
 		}
 		tm_utc = &tm_arg;
+	} else if ((argc == 3) && !strcmp(argv[1], "-r")) {
+		char * strtod_err;
+		double time_pulse = strtod(argv[2], &strtod_err);
+
+		if (strtod_err && (strtod_err[0] != '\0')) {
+			printf(
+				"pulse: strtod: Conversion error at '%s'\n",
+				strtod_err
+			);
+			return EXIT_FAILURE;
+		}
+		if (time_pulse >= 1000.0) {
+			fputs("Invalid pulse\n", stderr);
+			return EXIT_FAILURE;
+		}
+
+		double as_hour = time_pulse * 24 / 1000;
+		double as_minute = (as_hour - floor(as_hour)) * 60;
+		double as_second = (as_minute - floor(as_minute)) * 60;
+
+		printf(
+			"%02.f:%02.f:%02.f\n",
+			floor(as_hour), floor(as_minute), floor(as_second)
+		);
+		return EXIT_SUCCESS;
 	} else {
 		if(time(&time_raw) < 0) {
 			perror("time");

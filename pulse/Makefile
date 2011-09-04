@@ -1,4 +1,5 @@
 PREFIX ?= /usr/local
+LDFLAGS += -lm
 
 all: pulse
 
