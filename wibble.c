@@ -7,6 +7,10 @@
 
 #define MAX_BRIGHTNESS 10
 
+cwiid_mesg_callback_t cwiid_callback;
+
+volatile uint8_t cnt_max = 7;
+
 int main()
 {
 	cwiid_wiimote_t *wiimote = NULL;
@@ -16,7 +20,6 @@ int main()
 	uint8_t ledstate = 0x0f;
 
 	uint8_t cnt = 0;
-	uint8_t cnt_max = 7;
 	uint8_t led[4] = {0, 0, 0, 0};
 
 	uint8_t step = 0;
@@ -46,6 +49,15 @@ int main()
 		printf("battery at %d%%\n",
 			(int)(100.0 * state.battery / CWIID_BATTERY_MAX));
 
+	if (cwiid_set_mesg_callback(wiimote, cwiid_callback))
+		fputs("cannot set callback. buttons won't work.\n", stderr);
+	
+	if (cwiid_enable(wiimote, CWIID_FLAG_MESG_IFC))
+		fputs("cannot enable callback. buttons won't work.\n", stderr);
+
+	if (cwiid_set_rpt_mode(wiimote, CWIID_RPT_BTN | CWIID_RPT_STATUS))
+		fputs("cannot set report mode. buttons won't work.\n", stderr);
+
 	while (1) {
 
 		if (++cnt == cnt_max) {
@@ -72,5 +84,23 @@ int main()
 	}
 
 	return EXIT_SUCCESS;
+}
+
+void cwiid_callback(cwiid_wiimote_t *wiimote, int mesg_count,
+	union cwiid_mesg mesg[], struct timespec *timestamp)
+{
+	for (int i = 0; i < mesg_count; i++) {
+		if (mesg[i].type == CWIID_MESG_BTN) {
+
+			if (mesg[i].btn_mesg.buttons & 0x1000)
+				cnt_max -= (cnt_max > 1 ? 1 : 0);
+			if (mesg[i].btn_mesg.buttons & 0x0010)
+				cnt_max += 1;
+			if (mesg[i].btn_mesg.buttons & 0x0080) {
+				exit(0);
+			}
+
+		}
+	}
 }
 

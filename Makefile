@@ -16,7 +16,7 @@ ledanim:
 	@$(MAKE) -C ledanim
 
 wibble: wibble.c
-	$(CC) $(CFLAGS) -lbluetooth -lcwiid -lm -o $@ $<
+	$(CC) -Wall -Wextra -pedantic -lbluetooth -lcwiid -lm -o $@ $<
 
 test:
 	prove -s t/*.t
