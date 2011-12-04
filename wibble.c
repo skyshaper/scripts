@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <time.h>
 #include <math.h>
 #include <bluetooth/bluetooth.h>
 #include <cwiid.h>
@@ -41,6 +42,8 @@ volatile int  cur_mode = 0;
 
 volatile int8_t cnt_max = 7;
 volatile uint8_t f_led[4][X_MAX];
+
+struct acc_cal wm_cal;
 
 const uint8_t stevens_io[19] = {
 	0, 0, 1, 1, 1, 3, 5, 7, 9, 10, 9, 7, 5, 3, 1, 1, 1, 0, 0
@@ -108,6 +111,9 @@ int main()
 
 	set_led_fun(0);
 
+	if (cwiid_get_acc_cal(wiimote, CWIID_EXT_NONE, &wm_cal))
+		fputs("unable to retrieve accelerometer calibration\n", stderr);
+
 	if (!cwiid_get_state(wiimote, &state))
 		printf("battery at %d%%\n",
 			(int)(100.0 * state.battery / CWIID_BATTERY_MAX));
@@ -153,8 +159,12 @@ int main()
 /* 97 .. 122 .. 150 */
 
 void cwiid_callback(cwiid_wiimote_t *wiimote, int mesg_count,
-	union cwiid_mesg mesg[], struct timespec *timestamp)
+	union cwiid_mesg mesg[], struct timespec *ts)
 {
+	static double ff_start, ff_diff;
+	double a_x, a_y, a_z, accel;
+	struct cwiid_acc_mesg *am;
+
 	for (int i = 0; i < mesg_count; i++) {
 		if (mesg[i].type == CWIID_MESG_BTN) {
 
@@ -185,14 +195,30 @@ void cwiid_callback(cwiid_wiimote_t *wiimote, int mesg_count,
 		}
 		else if ((mesg[i].type == CWIID_MESG_ACC) && auto_mode) {
 
-			if (auto_rumble
-					&& ((mesg[i].acc_mesg.acc[CWIID_X] < 90)
-					||  (mesg[i].acc_mesg.acc[CWIID_X] > 155)
-					||  (mesg[i].acc_mesg.acc[CWIID_Y] < 90)
-					||  (mesg[i].acc_mesg.acc[CWIID_Y] > 155)
-					||  (mesg[i].acc_mesg.acc[CWIID_Z] < 90)
-					||  (mesg[i].acc_mesg.acc[CWIID_Z] > 155)))
-			{
+			am = &mesg[i].acc_mesg;
+
+			a_x = ((double)am->acc[CWIID_X] - wm_cal.zero[CWIID_X]) /
+				(wm_cal.one[CWIID_X] - wm_cal.zero[CWIID_X]);
+			a_y = ((double)am->acc[CWIID_Y] - wm_cal.zero[CWIID_Y]) /
+				(wm_cal.one[CWIID_Y] - wm_cal.zero[CWIID_Y]);
+			a_z = ((double)am->acc[CWIID_Z] - wm_cal.zero[CWIID_Z]) /
+				(wm_cal.one[CWIID_Z] - wm_cal.zero[CWIID_Z]);
+			accel = sqrt(pow(a_x,2)+pow(a_y,2)+pow(a_z,2));
+
+			if ((accel < 0.07) && !ff_start)
+				ff_start = ((uint64_t)ts->tv_sec * 1000000000) + ts->tv_nsec;
+			else if ((accel > 1.0) && ff_start) {
+				ff_diff = ((((uint64_t)ts->tv_sec * 1000000000)
+					+ ts->tv_nsec
+					- ff_start) / 1000000000);
+
+				printf("delta_t %.3fs - Fell approx. %.2fm\n", ff_diff,
+					(double)((9.81 * (double)(ff_diff) * (double)(ff_diff)) / (double)2));
+				ff_start = 0;
+			}
+
+
+			if (auto_rumble && (accel > 1.5)) {
 				if (!rumble)
 					cwiid_set_rumble(wiimote, (rumble = 1));
 			}
