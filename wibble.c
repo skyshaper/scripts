@@ -30,7 +30,10 @@
 #include <cwiid.h>
 
 #define MAX_BRIGHTNESS 10
-#define X_MAX 19
+#define X_MAXP 19
+#define X_MAXS 20
+#define X_MAXB 24
+#define X_MAX 24
 
 cwiid_mesg_callback_t cwiid_callback;
 
@@ -42,16 +45,27 @@ volatile int  cur_mode = 0;
 
 volatile int8_t cnt_max = 7;
 volatile uint8_t f_led[4][X_MAX];
+volatile uint8_t x_max = X_MAXP;
 
 struct acc_cal wm_cal;
 
-const uint8_t stevens_io[19] = {
-	0, 0, 1, 1, 1, 3, 5, 7, 9, 10, 9, 7, 5, 3, 1, 1, 1, 0, 0
+const uint8_t stevens_io[X_MAX] = {
+	0, 0, 1, 1, 1, 3, 5, 7, 9, 10, 9, 7, 5, 3, 1, 1, 1, 0, 0,   0, 0, 0, 0, 0
+};
+
+const uint8_t strobob[X_MAX] = {
+	10, 0, 10, 0, 10, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0,
+};
+
+const uint8_t invb[X_MAX] = {
+	0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+	0, 0, 0, 0
 };
 
 void set_led_fun(int new_mode)
 {
-	const int max_current = 2;
+	const int max_current = 5;
 	int i;
 
 	cur_mode = new_mode;
@@ -62,7 +76,8 @@ void set_led_fun(int new_mode)
 
 	switch (cur_mode) {
 	case 0:
-		for (i = 0; i < X_MAX; i++) {
+		x_max = X_MAXP;
+		for (i = 0; i < x_max; i++) {
 			f_led[0][i] = floor( 5 * ( cos( (float) (i +  0) / 3 ) + 1 ) );
 			f_led[1][i] = floor( 5 * ( cos( (float) (i +  3) / 3 ) + 1 ) );
 			f_led[2][i] = floor( 5 * ( cos( (float) (i +  6) / 3 ) + 1 ) );
@@ -70,7 +85,8 @@ void set_led_fun(int new_mode)
 		}
 		break;
 	case 1:
-		for (i = 0; i < X_MAX; i++) {
+		x_max = X_MAXP;
+		for (i = 0; i < x_max; i++) {
 			f_led[0][i] = floor( 5 * ( cos( (float) (i +  9) / 3 ) + 1 ) );
 			f_led[1][i] = floor( 5 * ( cos( (float) (i +  6) / 3 ) + 1 ) );
 			f_led[2][i] = floor( 5 * ( cos( (float) (i +  3) / 3 ) + 1 ) );
@@ -78,9 +94,34 @@ void set_led_fun(int new_mode)
 		}
 		break;
 	case 2:
-		for (i = 0; i < X_MAX; i++)
+		x_max = X_MAXP;
+		for (i = 0; i < x_max; i++)
 			f_led[0][i] = f_led[1][i] = f_led[2][i] = f_led[3][i]
 				= stevens_io[i];
+		break;
+	case 3:
+		x_max = X_MAXB;
+		for (i = 0; i < x_max; i++) {
+			f_led[0][i] = strobob[(i + 18) % x_max];
+			f_led[1][i] = strobob[(i + 12) % x_max];
+			f_led[2][i] = strobob[(i +  6) % x_max];
+			f_led[3][i] = strobob[i];
+		}
+		break;
+	case 4:
+		x_max = X_MAXS;
+		for (i = 0; i < x_max; i++) {
+			f_led[0][i] = invb[(i + 15) % x_max];
+			f_led[1][i] = invb[(i + 10) % x_max];
+			f_led[2][i] = invb[(i +  5) % x_max];
+			f_led[3][i] = invb[i];
+		}
+		break;
+	case 5:
+		x_max = X_MAXS;
+		for (i = 0; i < x_max; i++)
+			f_led[0][i] = f_led[1][i] = f_led[2][i] = f_led[3][i]
+				= (i % 2) * 10;
 		break;
 	}
 }
@@ -121,11 +162,13 @@ int main()
 	if (cwiid_set_mesg_callback(wiimote, cwiid_callback))
 		fputs("cannot set callback. buttons won't work.\n", stderr);
 	
+/*	cwiid_enable(wiimote, CWIID_FLAG_MOTIONPLUS);
+*/
 	if (cwiid_enable(wiimote, CWIID_FLAG_MESG_IFC))
 		fputs("cannot enable callback. buttons won't work.\n", stderr);
 
 	if (cwiid_set_rpt_mode(wiimote,
-			CWIID_RPT_BTN | CWIID_RPT_ACC | CWIID_RPT_STATUS))
+			CWIID_RPT_BTN | CWIID_RPT_ACC | CWIID_RPT_STATUS | CWIID_RPT_EXT))
 		fputs("cannot set report mode. buttons won't work.\n", stderr);
 
 	while (1) {
@@ -133,7 +176,7 @@ int main()
 		if (++cnt >= cnt_max) {
 			cnt = 0;
 			
-			if (++x == X_MAX)
+			if (++x == x_max)
 				x = 0;
 
 			for (i = 0; i < 4; i++)
@@ -157,11 +200,13 @@ int main()
 }
 
 /* 97 .. 122 .. 150 */
+/* mp: normal 8200 .. 8250? */
 
 void cwiid_callback(cwiid_wiimote_t *wiimote, int mesg_count,
 	union cwiid_mesg mesg[], struct timespec *ts)
 {
 	static double ff_start, ff_diff;
+	static double fp_start, fp_diff;
 	double a_x, a_y, a_z, accel;
 	struct cwiid_acc_mesg *am;
 
@@ -176,8 +221,11 @@ void cwiid_callback(cwiid_wiimote_t *wiimote, int mesg_count,
 				cnt_max -= (cnt_max > 1 ? 1 : 0);
 			if (mesg[i].btn_mesg.buttons & 0x0010)
 				cnt_max += 1;
-			if (mesg[i].btn_mesg.buttons & 0x0800)
+			if (mesg[i].btn_mesg.buttons & 0x0800) {
 				auto_mode = !auto_mode;
+				if (auto_mode)
+					x_max = X_MAXP;
+			}
 
 			if (mesg[i].btn_mesg.buttons & 0x0400) {
 				if (auto_mode)
@@ -193,7 +241,21 @@ void cwiid_callback(cwiid_wiimote_t *wiimote, int mesg_count,
 			}
 
 		}
-		else if ((mesg[i].type == CWIID_MESG_ACC) && auto_mode) {
+/*		else if ((mesg[i].type == CWIID_MESG_MOTIONPLUS) && auto_mode ) {
+
+			if ((mesg[i].motionplus_mesg.angle_rate[2] < 8000) && !fp_start)
+				fp_start = ((uint64_t)ts->tv_sec * 1000000000) + ts->tv_nsec;
+			else if ((mesg[i].motionplus_mesg.angle_rate[2] > 8200) && fp_start) {
+				fp_diff = ((((uint64_t)ts->tv_sec * 1000000000)
+					+ ts->tv_nsec
+					- ff_start) / 1000000000);
+
+				printf("mpdel_t %.3fs - Fell approx. %.2fm\n", ff_diff,
+					(double)((9.81 * (double)(fp_diff) * (double)(fp_diff)) / (double)2));
+				fp_start = 0;
+			}
+		}
+*/		else if ((mesg[i].type == CWIID_MESG_ACC) && auto_mode) {
 
 			am = &mesg[i].acc_mesg;
 
@@ -216,7 +278,6 @@ void cwiid_callback(cwiid_wiimote_t *wiimote, int mesg_count,
 					(double)((9.81 * (double)(ff_diff) * (double)(ff_diff)) / (double)2));
 				ff_start = 0;
 			}
-
 
 			if (auto_rumble && (accel > 1.5)) {
 				if (!rumble)
