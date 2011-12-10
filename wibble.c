@@ -221,21 +221,21 @@ void cwiid_callback(cwiid_wiimote_t *wiimote, int mesg_count,
 	for (int i = 0; i < mesg_count; i++) {
 		if (mesg[i].type == CWIID_MESG_BTN) {
 
-			if (mesg[i].btn_mesg.buttons & 0x0100)
+			if (mesg[i].btn_mesg.buttons & CWIID_BTN_LEFT)
 				set_led_fun(cur_mode - 1);
-			if (mesg[i].btn_mesg.buttons & 0x0200)
+			if (mesg[i].btn_mesg.buttons & CWIID_BTN_RIGHT)
 				set_led_fun(cur_mode + 1);
-			if (mesg[i].btn_mesg.buttons & 0x1000)
+			if (mesg[i].btn_mesg.buttons & CWIID_BTN_PLUS)
 				cnt_max -= (cnt_max > 1 ? 1 : 0);
-			if (mesg[i].btn_mesg.buttons & 0x0010)
+			if (mesg[i].btn_mesg.buttons & CWIID_BTN_MINUS)
 				cnt_max += 1;
-			if (mesg[i].btn_mesg.buttons & 0x0800) {
+			if (mesg[i].btn_mesg.buttons & CWIID_BTN_UP) {
 				auto_mode = !auto_mode;
 				if (auto_mode)
 					x_max = X_MAXP;
 			}
 
-			if (mesg[i].btn_mesg.buttons & 0x0400) {
+			if (mesg[i].btn_mesg.buttons & CWIID_BTN_DOWN) {
 				if (auto_mode)
 					auto_rumble = !auto_rumble;
 				else if (!rumble)
@@ -244,7 +244,7 @@ void cwiid_callback(cwiid_wiimote_t *wiimote, int mesg_count,
 			else if (rumble && !auto_mode)
 				cwiid_set_rumble(wiimote, (rumble = 0));
 
-			if (mesg[i].btn_mesg.buttons & 0x0080) {
+			if (mesg[i].btn_mesg.buttons & CWIID_BTN_HOME) {
 				exit(0);
 			}
 
