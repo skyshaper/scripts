@@ -142,6 +142,8 @@ int main()
 
 	uint8_t i;
 
+	uint8_t next_mode = 0;
+
 	if ((wiimote = cwiid_open(BDADDR_ANY, 0)) == NULL) {
 		fputs("Unable to connect\n", stderr);
 		return EXIT_FAILURE;
@@ -176,8 +178,14 @@ int main()
 		if (++cnt >= cnt_max) {
 			cnt = 0;
 			
-			if (++x == x_max)
+			if (++x == x_max) {
 				x = 0;
+
+				if (!auto_mode && (++next_mode == 20)) {
+					set_led_fun(cur_mode + 1);
+					next_mode = 0;
+				}
+			}
 
 			for (i = 0; i < 4; i++)
 				led[i] = f_led[i][x];
