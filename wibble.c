@@ -32,8 +32,8 @@
 #define MAX_BRIGHTNESS 10
 #define X_MAXP 19
 #define X_MAXS 20
-#define X_MAXB 24
-#define X_MAX 24
+#define X_MAXB 36
+#define X_MAX 36
 
 cwiid_mesg_callback_t cwiid_callback;
 
@@ -50,17 +50,13 @@ volatile uint8_t x_max = X_MAXP;
 struct acc_cal wm_cal;
 
 const uint8_t stevens_io[X_MAX] = {
-	0, 0, 1, 1, 1, 3, 5, 7, 9, 10, 9, 7, 5, 3, 1, 1, 1, 0, 0,   0, 0, 0, 0, 0
-};
-
-const uint8_t strobob[X_MAX] = {
-	10, 0, 10, 0, 10, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0,
+	0, 0, 1, 1, 1, 3, 5, 7, 9, 10, 9, 7, 5, 3, 1, 1, 1, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 const uint8_t invb[X_MAX] = {
 	0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-	0, 0, 0, 0
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 void set_led_fun(int new_mode)
@@ -102,10 +98,15 @@ void set_led_fun(int new_mode)
 	case 3:
 		x_max = X_MAXB;
 		for (i = 0; i < x_max; i++) {
-			f_led[0][i] = strobob[(i + 18) % x_max];
-			f_led[1][i] = strobob[(i + 12) % x_max];
-			f_led[2][i] = strobob[(i +  6) % x_max];
-			f_led[3][i] = strobob[i];
+			f_led[0][i] = f_led[1][i] = f_led[2][i] = f_led[3][i] = 0;
+			if ((i%2) && (i<6))
+				f_led[0][i] = MAX_BRIGHTNESS;
+			if ((i%2) && (((i>=6) && (i<12)) || (i>=30)))
+				f_led[1][i] = MAX_BRIGHTNESS;
+			if ((i%2) && (((i>=12) && (i<18)) || ((i>=24) && (i<30))))
+				f_led[2][i] = MAX_BRIGHTNESS;
+			if ((i%2) && (i>=18) && (i<24))
+				f_led[3][i] = MAX_BRIGHTNESS;
 		}
 		break;
 	case 4:
@@ -181,7 +182,7 @@ int main()
 			if (++x == x_max) {
 				x = 0;
 
-				if (!auto_mode && (++next_mode == 20)) {
+				if (!auto_mode && (++next_mode == 42)) {
 					set_led_fun(cur_mode + 1);
 					next_mode = 0;
 				}
