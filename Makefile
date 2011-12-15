@@ -15,9 +15,6 @@ bubblebabble: bubblebabble.c
 ledanim:
 	@$(MAKE) -C ledanim
 
-wibble: wibble.c
-	$(CC) -Wall -Wextra -pedantic -lbluetooth -lcwiid -lm -o $@ $<
-
 test:
 	prove -s t/*.t
 
