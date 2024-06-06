@@ -1,4 +1,4 @@
-/* Copyright (c) 2008 Lars Stoltenow <penma@penma.de>
+/* Copyright (c) 2008 Lara Stoltenow <penma@penma.de>
  * Licensed under WTFPL
  */
 

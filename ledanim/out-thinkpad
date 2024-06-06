@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (c) 2008 Lars Stoltenow <penma@penma.de>
+# Copyright (c) 2008 Lara Stoltenow <penma@penma.de>
 #                and Maximilian Gaß <mxey@cloudconnected.org>
 # Licensed under WTFPL
 use strict;

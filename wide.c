@@ -1,8 +1,8 @@
 /*
  * Converts lowercase chars into wide Unicode equivalent
  *
- * Copyright (C) 2008 by Lars Stoltenow <penma@penma.de>
- *                   and Daniel Friesel <derf@derf.homelinux.org>
+ * Copyright (C) 2008 by Lara Stoltenow <penma@penma.de>
+ *                   and Birte Kristina Friesel <derf@derf.homelinux.org>
  *
  * License: WTFPL <http://sam.zoy.org/wtfpl>
  */

@@ -1,6 +1,6 @@
 #!/usr/bin/perl -p
 # 2fel - Talk like berni ;D
-# Copyright (c) 2008 Daniel Friesel
+# Copyright (c) 2008 Birte Kristina Friesel
 # Licensed under WTFPL
 
 s/ein(s|z)/1/gi;
